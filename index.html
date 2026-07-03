@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -21,7 +21,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%2314161f'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-style='italic' font-size='34' fill='%23c6a15b' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#0a0a0d;
@@ -40,6 +40,16 @@
     --body: 'Manrope', sans-serif;
     --mono: 'Space Mono', monospace;
   }
+  
+  /* Fallback fonts when viewing Kurdish or Arabic for fluid RTL display */
+  html[lang="ku"] body, html[lang="ar"] body,
+  html[lang="ku"] button, html[lang="ar"] button,
+  html[lang="ku"] input, html[lang="ar"] input,
+  html[lang="ku"] textarea, html[lang="ar"] textarea,
+  html[lang="ku"] select, html[lang="ar"] select {
+    font-family: 'Noto Sans Arabic', 'Manrope', sans-serif;
+  }
+  
   *{margin:0;padding:0;box-sizing:border-box;}
   html{ overflow-x:hidden; }
   body{
@@ -114,13 +124,16 @@
   nav.wrap{
     display:flex;align-items:center;justify-content:space-between;
     height:76px;
+    gap:10px;
   }
   .logo{
     font-family:var(--display);
     font-style:italic;font-weight:500;font-size:24px;
     display:flex;align-items:center;gap:10px;
+    direction: ltr; /* Keeps brand text from flipping backward in RTL */
   }
   .logo span{color:var(--brass);font-style:normal;}
+  .logo-text{ white-space:nowrap; letter-spacing:0; }
   .logo-mark{
     width:30px;height:30px;border-radius:6px;
     background:var(--ink-soft2);border:1px solid var(--line-strong);
@@ -135,6 +148,7 @@
     border-radius:30px;
     padding:4px;
     position:relative;
+    direction: ltr; /* Ensures JavaScript slider calculations stay precise */
   }
   .tab-indicator{
     position:absolute;top:4px;bottom:4px;left:4px;
@@ -150,6 +164,36 @@
     position:relative;z-index:1;
   }
   .tab-btn.active{ color:var(--ink); font-weight:700; }
+  
+  /* Language Switcher Styling */
+  .lang-selector{
+    background:var(--ink-soft);
+    border:1px solid var(--line-strong);
+    color:var(--bone);
+    font-family:var(--mono);
+    font-size:11px;
+    padding:6px 10px;
+    border-radius:14px;
+    outline:none;
+    cursor:pointer;
+    transition:border-color .2s ease;
+  }
+  .lang-selector:focus{ border-color:var(--brass); }
+  .nav-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  html[dir="rtl"] .eyebrow::before {
+    margin-left: 10px;
+    margin-right: 0;
+  }
+  html[dir="rtl"] .side-note {
+    border-left: none;
+    border-right: 2px solid var(--brass);
+  }
+
   .view-panel{ animation:panelIn .4s cubic-bezier(.2,.7,.2,1) both; }
   @keyframes panelIn{
     from{ opacity:0; transform:translateY(10px); }
@@ -176,6 +220,9 @@
     z-index:95;display:flex;flex-direction:column;
     transform:translateX(100%);transition:transform .35s ease;
   }
+  html[dir="rtl"] .cart-drawer {
+    right: auto; left: 0; border-left: none; border-right: 1px solid var(--line-strong); transform: translateX(-100%);
+  }
   .cart-drawer.open{ transform:translateX(0); }
   .cart-head{
     display:flex;align-items:center;justify-content:space-between;
@@ -197,6 +244,10 @@
     from{ opacity:0; transform:translateX(16px); }
     to{ opacity:1; transform:translateX(0); }
   }
+  html[dir="rtl"] @keyframes cartItemIn {
+    from{ opacity:0; transform:translateX(-16px); }
+    to{ opacity:1; transform:translateX(0); }
+  }
   .cart-item img{ width:64px;height:76px;object-fit:cover;border-radius:2px;flex-shrink:0; }
   .cart-item-ph{ width:64px;height:76px;background:var(--ink-soft2);border-radius:2px;flex-shrink:0; }
   .cart-item-info{ flex:1;display:flex;flex-direction:column;gap:6px; }
@@ -212,10 +263,10 @@
   .qty-stepper span{ font-family:var(--mono);font-size:12px;min-width:16px;text-align:center; }
   .cart-item-remove{
     background:none;border:none;color:var(--bone-dim);font-family:var(--mono);
-    font-size:11px;text-decoration:underline;margin-top:2px;text-align:left;
-    align-self:flex-start;
+    font-size:11px;text-decoration:underline;margin-top:2px;
+    text-align:left; align-self:flex-start;
   }
-  .cart-item-remove:hover{ color:var(--clay); }
+  html[dir="rtl"] .cart-item-remove { text-align: right; }
   .cart-item-price{ font-family:var(--mono);font-size:13px;color:var(--brass);white-space:nowrap; }
   .cart-empty{
     text-align:center;padding:60px 20px;color:var(--bone-dim);font-family:var(--mono);font-size:12px;
@@ -276,7 +327,8 @@
   .page-head h1{
     font-family:var(--display);font-weight:500;font-size:clamp(30px,4vw,42px);
   }
-  .page-head p{ max-width:280px;font-size:13px;color:var(--bone-dim);line-height:1.6;text-align:right; }
+  .page-head p{ max-width:280px;font-size:13px;color:var(--bone-dim);line-height:1.6; text-align:right; }
+  html[dir="rtl"] .page-head p { text-align: left; }
 
   /* ---- scroll reveal ---- */
   .reveal{
@@ -297,6 +349,7 @@
     margin-bottom:90px;padding:0 40px;
     border-bottom:1px solid var(--line);
   }
+  html[dir="rtl"] .hero { margin-left: 0; margin-right: calc(-50vw + 50%); }
   .hero-glow{
     position:absolute;top:8%;left:50%;transform:translateX(-50%);
     width:900px;max-width:160vw;height:500px;
@@ -518,6 +571,7 @@
     font-family:var(--mono);font-size:10px;letter-spacing:0.06em;
     padding:3px 8px;border-radius:12px;color:var(--brass);
   }
+  html[dir="rtl"] .card-code { left: auto; right: 10px; }
   .del-btn{
     position:absolute;top:10px;right:10px;
     width:26px;height:26px;border-radius:50%;
@@ -526,10 +580,13 @@
     display:flex;align-items:center;justify-content:center;
     opacity:0;transition:opacity .2s ease, border-color .2s ease;
   }
+  html[dir="rtl"] .del-btn { right: auto; left: 10px; }
   .card:hover .del-btn{ opacity:1; }
   .del-btn:hover{ border-color:var(--clay); }
   .card-body{ padding:16px 16px 18px; flex:1;display:flex;flex-direction:column;gap:6px; }
   .card-body h4{ font-family:var(--display);font-weight:500;font-size:16px; }
+  .card-body h4[dir="auto"], .card-desc[dir="auto"]{ unicode-bidi:plaintext; }
+  html[dir="rtl"] .card-body h4[dir="auto"], html[dir="rtl"] .card-desc[dir="auto"]{ text-align:right; }
   .card-meta{ display:flex;justify-content:space-between;align-items:baseline; }
   .card-price{ font-family:var(--mono);font-size:13px;color:var(--brass); }
   .card-stock{ font-family:var(--mono);font-size:10px;color:var(--bone-dim);text-transform:uppercase; }
@@ -633,6 +690,7 @@
   .order-card-head h4{ font-family:var(--display);font-weight:500;font-size:17px;margin-bottom:6px; }
   .order-meta{ font-family:var(--mono);font-size:11px;color:var(--bone-dim); }
   .order-total{ font-family:var(--mono);font-size:15px;color:var(--brass);text-align:right; }
+  html[dir="rtl"] .order-total { text-align: left; }
   .order-items{ display:flex;flex-direction:column;gap:10px; }
   .order-line{
     display:flex;justify-content:space-between;font-size:13px;color:var(--bone-dim);
@@ -661,6 +719,7 @@
     .tabs{ display:flex; }
     .page-head{ flex-direction:column;align-items:flex-start;gap:14px; }
     .page-head p{ text-align:left; }
+    html[dir="rtl"] .page-head p { text-align: right; }
   }
   @media (max-width:520px){
     .grid{ grid-template-columns:1fr 1fr; }
@@ -745,13 +804,20 @@
 
 <header id="siteHeader">
   <nav class="wrap">
-    <div class="logo"><span class="logo-mark">A</span>ASIO<span>RA</span></div>
+    <div class="logo"><span class="logo-mark">A</span><span class="logo-text">ASIO<span>RA</span></span></div>
     <div class="tabs" id="tabsRow">
       <div class="tab-indicator" id="tabIndicator"></div>
-      <button class="tab-btn active" data-tab="shop">Storefront</button>
-      <button class="tab-btn" data-tab="orders">Orders</button>
+      <button class="tab-btn active" data-tab="shop" data-t="tab_storefront">Storefront</button>
+      <button class="tab-btn" data-tab="orders" data-t="tab_orders">Orders</button>
     </div>
-    <button class="bag-count" id="bagCount" aria-label="Open bag">0</button>
+    <div class="nav-actions">
+      <select id="langSelector" class="lang-selector">
+        <option value="en">EN</option>
+        <option value="ku">کوردی</option>
+        <option value="ar">العربية</option>
+      </select>
+      <button class="bag-count" id="bagCount" aria-label="Open bag">0</button>
+    </div>
   </nav>
 </header>
 
@@ -765,15 +831,15 @@
       <div class="hero-particles" id="heroParticles" aria-hidden="true"></div>
       <div class="hero-glow" aria-hidden="true"></div>
       <div class="hero-inner">
-        <div class="eyebrow reveal">The Autumn Edit</div>
+        <div class="eyebrow reveal" data-t="hero_eyebrow">The Autumn Edit</div>
         <h1 class="hero-title" id="heroTitle" aria-label="Considered, always.">
-          <span class="hline"><span class="hword">Considered,</span></span>
-          <span class="hline"><span class="hword gold-text">always.</span></span>
+          <span class="hline"><span class="hword" data-t="hero_title_1">Considered,</span></span>
+          <span class="hline"><span class="hword gold-text" data-t="hero_title_2">always.</span></span>
         </h1>
-        <p class="hero-sub reveal">Clothing, objects, and now fragrance — edited with restraint.</p>
+        <p class="hero-sub reveal" data-t="hero_sub">Clothing, objects, and now fragrance — edited with restraint.</p>
         <div class="hero-cta reveal">
-          <button class="btn-lux magnetic" onclick="document.getElementById('searchInput').scrollIntoView({behavior:'smooth',block:'center'})">Shop the Edit</button>
-          <button class="btn-lux-ghost magnetic" onclick="document.getElementById('fragranceSection').scrollIntoView({behavior:'smooth',block:'start'})">Explore Fragrance</button>
+          <button class="btn-lux magnetic" data-t="hero_cta_shop" onclick="document.getElementById('searchInput').scrollIntoView({behavior:'smooth',block:'center'})">Shop the Edit</button>
+          <button class="btn-lux-ghost magnetic" data-t="hero_cta_explore" onclick="document.getElementById('fragranceSection').scrollIntoView({behavior:'smooth',block:'start'})">Explore Fragrance</button>
         </div>
       </div>
       <div class="scroll-indicator" aria-hidden="true"><span></span></div>
@@ -795,10 +861,10 @@
           </div>
         </div>
         <div class="frag-copy reveal">
-          <div class="eyebrow">New</div>
-          <h2>The Fragrance Edit</h2>
-          <p>A small collection of scents, formulated the same way we choose everything else — considered, unhurried, made to last. Browse what's available below, or message us for the full sample set.</p>
-          <button class="btn-lux magnetic" id="frag-cta">View Fragrance</button>
+          <div class="eyebrow" data-t="frag_eyebrow">New</div>
+          <h2 data-t="frag_title">The Fragrance Edit</h2>
+          <p data-t="frag_desc">A small collection of scents, formulated the same way we choose everything else — considered, unhurried, made to last. Browse what's available below, or message us for the full sample set.</p>
+          <button class="btn-lux magnetic" id="frag-cta" data-t="frag_cta">View Fragrance</button>
         </div>
       </div>
       <div class="grid" id="fragranceGrid" style="margin-top:56px;"></div>
@@ -806,10 +872,10 @@
 
     <div class="page-head reveal">
       <div>
-        <div class="eyebrow">The Index</div>
-        <h1>All pieces</h1>
+        <div class="eyebrow" data-t="index_eyebrow">The Index</div>
+        <h1 data-t="index_title">All pieces</h1>
       </div>
-      <p>Everything currently listed, including anything you've added yourself.</p>
+      <p data-t="index_desc">Everything currently listed.</p>
     </div>
 
     <div class="search-row">
@@ -817,19 +883,19 @@
     </div>
 
     <div class="filters" id="filters">
-      <button class="chip active" data-cat="ALL">All</button>
-      <button class="chip" data-cat="WMN">Womenswear</button>
-      <button class="chip" data-cat="MEN">Menswear</button>
-      <button class="chip" data-cat="ACC">Accessories</button>
-      <button class="chip" data-cat="SHO">Footwear</button>
-      <button class="chip" data-cat="HME">Home &amp; Living</button>
-      <button class="chip" data-cat="BTY">Apothecary</button>
-      <button class="chip" data-cat="FRG">Fragrance</button>
-      <button class="chip" data-cat="KID">Kidswear</button>
+      <button class="chip active" data-cat="ALL" data-t="cat_all">All</button>
+      <button class="chip" data-cat="WMN" data-t="cat_wmn">Womenswear</button>
+      <button class="chip" data-cat="MEN" data-t="cat_men">Menswear</button>
+      <button class="chip" data-cat="ACC" data-t="cat_acc">Accessories</button>
+      <button class="chip" data-cat="SHO" data-t="cat_sho">Footwear</button>
+      <button class="chip" data-cat="HME" data-t="cat_hme">Home &amp; Living</button>
+      <button class="chip" data-cat="BTY" data-t="cat_bty">Apothecary</button>
+      <button class="chip" data-cat="FRG" data-t="cat_frg">Fragrance</button>
+      <button class="chip" data-cat="KID" data-t="cat_kid">Kidswear</button>
     </div>
 
     <div class="grid" id="productGrid">
-      <div class="loading">Loading pieces…</div>
+      <div class="loading" data-t="loading_pieces">Loading pieces…</div>
     </div>
   </section>
 
@@ -837,22 +903,22 @@
   <section id="orders-view" style="display:none;">
     <div class="page-head reveal">
       <div>
-        <div class="eyebrow">Your Account</div>
-        <h1 id="ordersHeading">Order history</h1>
+        <div class="eyebrow" data-t="account_eyebrow">Your Account</div>
+        <h1 id="ordersHeading" data-t="account_title">Order history</h1>
       </div>
-      <p id="ordersSubhead">Orders placed on this device.</p>
+      <p id="ordersSubhead" data-t="account_subhead">Orders placed on this device.</p>
     </div>
 
     <!-- Logged out: invite to sign in, but still show local history below -->
     <div id="accountAuth" class="admin-layout" style="margin-bottom:44px;">
       <div class="form-card">
-        <div class="field"><label for="acc-email">Email</label><input type="email" id="acc-email" placeholder="you@example.com"></div>
-        <div class="field"><label for="acc-password">Password</label><input type="password" id="acc-password" placeholder="At least 6 characters"></div>
-        <button type="button" class="submit-btn" id="accSignInBtn">Sign in</button>
-        <button type="button" class="submit-btn" id="accSignUpBtn" style="background:none;border:1px solid var(--line-strong);color:var(--bone-dim);margin-top:10px;">Create an account</button>
+        <div class="field"><label for="acc-email" data-t="label_email">Email</label><input type="email" id="acc-email" placeholder="you@example.com"></div>
+        <div class="field"><label for="acc-password" data-t="label_password">Password</label><input type="password" id="acc-password" placeholder="At least 6 characters"></div>
+        <button type="button" class="submit-btn" id="accSignInBtn" data-t="btn_signin">Sign in</button>
+        <button type="button" class="submit-btn" id="accSignUpBtn" style="background:none;border:1px solid var(--line-strong);color:var(--bone-dim);margin-top:10px;" data-t="btn_create_account">Create an account</button>
         <div class="form-msg" id="accAuthMsg"></div>
       </div>
-      <div class="side-note">
+      <div class="side-note" data-t="account_note">
         Signed out right now — the orders below are only saved on this device. Sign in or create an account to see your order history from your phone, your laptop, anywhere. You don't need an account to browse or order through WhatsApp.
       </div>
     </div>
@@ -860,12 +926,12 @@
     <!-- Logged in: account bar -->
     <div id="accountOrders" style="display:none;">
       <div class="side-note" style="display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px;">
-        <span>Signed in as <span id="accEmailLabel" style="color:var(--brass);"></span></span>
-        <button type="button" class="listing-del" id="accSignOutBtn">Sign out</button>
+        <span><span data-t="signed_in_as">Signed in as</span> <span id="accEmailLabel" style="color:var(--brass);"></span></span>
+        <button type="button" class="listing-del" id="accSignOutBtn" data-t="btn_signout">Sign out</button>
       </div>
     </div>
 
-    <div id="ordersList"><div class="loading">Loading…</div></div>
+    <div id="ordersList"><div class="loading" data-t="loading">Loading…</div></div>
   </section>
 
   <!-- ============ ADMIN ============ -->
@@ -941,26 +1007,26 @@
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-brand">
-        <div class="logo"><span class="logo-mark">A</span>ASIO<span>RA</span></div>
-        <p>Considered clothing and objects, edited with restraint. Order through WhatsApp — no account, no card needed.</p>
+        <div class="logo"><span class="logo-mark">A</span><span class="logo-text">ASIO<span>RA</span></span></div>
+        <p data-t="footer_brand_desc">Considered clothing and objects, edited with restraint. Order through WhatsApp — no account, no card needed.</p>
       </div>
       <div class="foot-col">
-        <h5>Shop</h5>
+        <h5 data-t="footer_col_shop">Shop</h5>
         <ul>
-          <li><button data-footer-tab="shop">Storefront</button></li>
-          <li><button data-footer-tab="orders">Your orders</button></li>
+          <li><button data-footer-tab="shop" data-t="tab_storefront">Storefront</button></li>
+          <li><button data-footer-tab="orders" data-t="tab_orders">Your orders</button></li>
         </ul>
       </div>
       <div class="foot-col">
-        <h5>Contact</h5>
+        <h5 data-t="footer_col_contact">Contact</h5>
         <ul>
-          <li><a href="https://wa.me/9647501864144" target="_blank" rel="noopener">WhatsApp us</a></li>
+          <li><a href="https://wa.me/9647501864144" target="_blank" rel="noopener" data-t="footer_whatsapp">WhatsApp us</a></li>
         </ul>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© 2026 ASIORA. All rights reserved.</span>
-      <span>Crafted with restraint.</span>
+      <span data-t="footer_rights">© 2026 ASIORA. All rights reserved.</span>
+      <span data-t="footer_crafted">Crafted with restraint.</span>
     </div>
   </div>
 </footer>
@@ -968,7 +1034,7 @@
 <div class="cart-overlay" id="cartOverlay"></div>
 <div class="cart-drawer" id="cartDrawer">
   <div class="cart-head">
-    <h3 id="cartTitle">Your bag</h3>
+    <h3 id="cartTitle" data-t="cart_title">Your bag</h3>
     <button class="cart-close" id="cartClose" aria-label="Close bag">×</button>
   </div>
   <div class="cart-body" id="cartBody"></div>
@@ -980,18 +1046,114 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script>
 (function(){
-  const CAT_LABELS = { WMN:'Womenswear', MEN:'Menswear', ACC:'Accessories', SHO:'Footwear', HME:'Home & Living', BTY:'Apothecary', KID:'Kidswear', FRG:'Fragrance' };
-  const ORDERS_KEY = 'asiora-orders'; // fallback for guests who never sign in
+  // Global translation tracking variable
+  let currentLang = 'en';
+
+  const T_DICT = {
+    en: {
+      tab_storefront: "Storefront", tab_orders: "Orders",
+      hero_eyebrow: "The Autumn Edit", hero_title_1: "Considered,", hero_title_2: "always.", hero_sub: "Clothing, objects, and now fragrance — edited with restraint.", hero_cta_shop: "Shop the Edit", hero_cta_explore: "Explore Fragrance",
+      frag_eyebrow: "New", frag_title: "The Fragrance Edit", frag_desc: "A small collection of scents, formulated the same way we choose everything else — considered, unhurried, made to last. Browse what's available below, or message us for the full sample set.", frag_cta: "View Fragrance",
+      index_eyebrow: "The Index", index_title: "All pieces", index_desc: "Everything currently listed.",
+      search_placeholder: "Search pieces…",
+      cat_all: "All", cat_wmn: "Womenswear", cat_men: "Menswear", cat_acc: "Accessories", cat_sho: "Footwear", cat_hme: "Home & Living", cat_bty: "Apothecary", cat_frg: "Fragrance", cat_kid: "Kidswear",
+      loading_pieces: "Loading pieces…", loading: "Loading…", fragrance_empty: "Fragrance is on its way — check back soon.",
+      account_eyebrow: "Your Account", account_title: "Order history", account_subhead: "Orders placed on this device.", account_note: "Signed out right now — the orders below are only saved on this device. Sign in or create an account to see your order history from your phone, your laptop, anywhere. You don't need an account to browse or order through WhatsApp.",
+      label_email: "Email", label_password: "Password", btn_signin: "Sign in", btn_create_account: "Create an account", btn_signout: "Sign out", signed_in_as: "Signed in as",
+      footer_brand_desc: "Considered clothing and objects, edited with restraint. Order through WhatsApp — no account, no card needed.", footer_col_shop: "Shop", footer_col_contact: "Contact", footer_whatsapp: "WhatsApp us", footer_rights: "© 2026 ASIORA. All rights reserved.", footer_crafted: "Crafted with restraint.",
+      cart_title: "Your bag", cart_empty: "Your bag is empty. Add a piece from the storefront.", cart_subtotal: "Subtotal", cart_total: "Total", btn_checkout: "Order via WhatsApp", btn_remove: "Remove", btn_back_bag: "← Back to bag",
+      checkout_title: "Order details", checkout_note: "No payment happens here — you'll send this order straight to us on WhatsApp to confirm and arrange payment.",
+      label_name: "Full name", label_phone: "Your WhatsApp number", label_address: "Delivery address", label_city: "City", btn_send_wa: "Send order on WhatsApp",
+      confirm_title: "Order sent", confirm_eyebrow: "Almost there", confirm_h3: "WhatsApp is open.", confirm_p1: "We've noted {num} piece(s) for ${price}.", confirm_p2: "Send the message that opened in WhatsApp to confirm your order with us — that's where we'll sort out payment and delivery.", btn_continue: "Continue shopping",
+      stock_status: "in stock", sold_out: "sold out", add_bag: "Add to bag"
+    },
+    ku: {
+      tab_storefront: "فرۆشگا", tab_orders: "داواکارییەکان",
+      hero_eyebrow: "دەستکاری پایز", hero_title_1: "پێداچوونەوە،", hero_title_2: "هەمیشە.", hero_sub: "جلوبەرگ، کەلوپەل، و ئێستا بۆن — بە ڕێگرییەوە دەستکاری کراون.", hero_cta_shop: "بڕوانە بەشەکان", hero_cta_explore: "بۆنەکان بپشکنه",
+      frag_eyebrow: "نوێ", frag_title: "دەستکاری بۆن", frag_desc: "کۆمەڵێک بۆنی بچووک، بە هەمان شێوازی هەڵبژاردنی هەموو شتەکانی تر داڕێژراون — بە بیرکردنەوە، بێ پەلەکردن، بۆ ئەوەی بمێنێتەوە. سەیری ئەوانەی خوارەوە بکە، یان نامەمان بۆ بنێرە بۆ وەرگرتنی نمونەی تەواو.", frag_cta: "بینینی بۆنەکان",
+      index_eyebrow: "پێڕست", index_title: "هەموو پارچەکان", index_desc: "هەموو ئەو شتانەی کە لە ئێستادا لیستکراون.",
+      search_placeholder: "گەڕان بۆ پارچەکان…",
+      cat_all: "هەمووی", cat_wmn: "جلی ئافرەتان", cat_men: "جلی پیاوان", cat_acc: "ئێکسسوارات", cat_sho: "پێڵاو", cat_hme: "ماڵ و ژیان", cat_bty: "دەرمانخانە", cat_frg: "بۆن", cat_kid: "جلی منداڵان",
+      loading_pieces: "پارچەکان باردەکرێن…", loading: "باردەکرێت…", fragrance_empty: "بۆنەکان لە ڕێگادان — زوو جارێکی تر سەردان بکە.",
+      account_eyebrow: "هەژماری تۆ", account_title: "مێژووی داواکارییەکان", account_subhead: "ئەو داواکاریانەی لەسەر ئەم ئامێرە جێگیرکراون.", account_note: "لە ئێستادا چوونە دەرەوەت کردووە — ئەو داواکاریانەی خوارەوە تەنها لەسەر ئەم ئامێرە پاشکەوت دەکرێن. بچۆ ژوورەوە یان هەژمارێک دروستبکە بۆ بینینی مێژووی داواکارییەکانت لە مۆبایلەکەت، لاپتۆپەکەت، یان هەر شوێنێک. بۆ کڕین پێویستت بە هەژمار نییە لە ڕێگەی واتسئەپ.",
+      label_email: "ئیمەیڵ", label_password: "وشەی تێپەڕ", btn_signin: "چوونەژوورەوە", btn_create_account: "دروستکردنی هەژمار", btn_signout: "چوونەدەرەوە", signed_in_as: "چوونەژوورەوە وەک",
+      footer_brand_desc: "جلوبەرگ و کەلوپەلی دیاریکراو، بە ڕێگرییەوە دەستکاری کراوە. لە ڕێگەی واتسئەپ داوا بکە — بەبێ هەژمار، بەبێ کارتی بانکی.", footer_col_shop: "دوکان", footer_col_contact: "پەیوەندی", footer_whatsapp: "پەیوەندیمان پێوە بکە لە واتسئەپ", footer_rights: "© 2026 ASIORA. هەموو مافەکان پارێزراوە.", footer_crafted: "بە دانبەخۆداگرتنەوە دروستکراوە.",
+      cart_title: "کنتۆرەکەت", cart_empty: "کنتۆرەکەت بەتاڵە. پارچەیەک لە فرۆشگاوە زیاد بکە.", cart_subtotal: "کۆی گشتی بەشەکان", cart_total: "کۆی گشتی", btn_checkout: "داواکاری لە ڕێگەی واتسئەپ", btn_remove: "سڕینەوە", btn_back_bag: "← گەڕانەوە بۆ کنتۆر",
+      checkout_title: "زانیارییەکانی داواکاری", checkout_note: "هیچ پارەدانێک لێرە ڕوونادات — ئەم داواکارییە ڕاستەوخۆ لە واتسئەپ بۆ ئێمە دەنێریت بۆ پشتڕاستکردنەوە و ڕێکخستنی پارەدان.",
+      label_name: "ناوی تەواو", label_phone: "ژمارەی واتسئەپی تۆ", label_address: "ناونیشانی گەیاندن", label_city: "شار", btn_send_wa: "ناردنی داواکاری لە واتسئەپ",
+      confirm_title: "داواکاری نێردرا", confirm_eyebrow: "نزیک بوویتەوە", confirm_h3: "واتسئەپ کراوەیە.", confirm_p1: "تێبینیمان کردووە {num} پارچە بە نرخی ${price}.", confirm_p2: "ئەو نامەیەی لە واتسئەپ کراوەتەوە بینێرە بۆ پشتڕاستکردنەوەی داواکارییەکەت لەگەڵمان — لەوێدا پارەدان و گەیاندن ڕێکدەخەین.", btn_continue: "بەردەوام بە لە کڕین",
+      stock_status: "له کۆگا هەیە", sold_out: "تەواو بوو", add_bag: "زیادکردن بۆ کنتۆر"
+    },
+    ar: {
+      tab_storefront: "المتجر", tab_orders: "الطلبات",
+      hero_eyebrow: "نسخة الخريف", hero_title_1: "مدروس،", hero_title_2: "دائماً.", hero_sub: "الملابس، والقطع، والآن العطور — تم اختيارها وتعديلها بعناية فائقة.", hero_cta_shop: "تسوق التشكيلة", hero_cta_explore: "اكتشف العطور",
+      frag_eyebrow: "جديد", frag_title: "تشكيلة العطور", frag_desc: "مجموعة صغيرة من الروائح، تم تركيبها بنفس الطريقة التي نختار بها كل شيء آخر — مدروسة، غير متسرعة، وصُنعت لتدوم. تصفح ما هو متاح أدناه، أو راسلنا للحصول على مجموعة العينات الكاملة.", frag_cta: "عرض العطور",
+      index_eyebrow: "الفهرس", index_title: "جميع القطع", index_desc: "كل شيء مدرج حاليًا.",
+      search_placeholder: "ابحث عن القطع…",
+      cat_all: "الكل", cat_wmn: "ملابس نسائية", cat_men: "ملابس رجالية", cat_acc: "إكسسوارات", cat_sho: "أحذية", cat_hme: "المنزل والمعيشة", cat_bty: "مستحضرات التجميل", cat_frg: "العطور", cat_kid: "ملابس أطفال",
+      loading_pieces: "جاري تحميل القطع…", loading: "جاري التحميل…", fragrance_empty: "العطور في الطريق — تحقق مرة أخرى قريبًا.",
+      account_eyebrow: "حسابك", account_title: "سجل الطلبات", account_subhead: "الطلبات المقدمة على هذا الجهاز.", account_note: "مسجل الخروج حاليًا — الطلبات أدناه محفوظة فقط على هذا الجهاز. قم بتسجيل الدخول أو إنشاء حساب لمشاهدة سجل طلباتك من هاتفك، أو لابتوبك، أو أي مكان آخر. لا تحتاج إلى حساب للتصفح أو الطلب عبر الواتساب.",
+      label_email: "البريد الإلكتروني", label_password: "كلمة المرور", btn_signin: "تسجيل الدخول", btn_create_account: "إنشاء حساب", btn_signout: "تسجيل الخروج", signed_in_as: "مسجل الدخول باسم",
+      footer_brand_desc: "ملابس وقطع مختارة بعناية فائقة. اطلب عبر الواتساب — لا حاجة لحساب أو بطاقة ائتمان.", footer_col_shop: "المتجر", footer_col_contact: "اتصل بنا", footer_whatsapp: "راسلنا عبر الواتساب", footer_rights: "© 2026 ASIORA. جميع الحقوق محفوظة.", footer_crafted: "صُنع بكل عناية ودقة.",
+      cart_title: "حقيبتك", cart_empty: "حقيبتك فارغة. أضف بعض القطع من المتجر.", cart_subtotal: "المجموع الفرعي", cart_total: "المجموع الكلي", btn_checkout: "اطلب عبر الواتساب", btn_remove: "حذف", btn_back_bag: "← العودة للحقيبة",
+      checkout_title: "تفاصيل الطلب", checkout_note: "لا توجد عملية دفع هنا — سترسل هذا الطلب مباشرة إلينا على الواتساب لتأكيده وترتيب عملية الدفع.",
+      label_name: "الاسم الكامل", label_phone: "رقم الواتساب الخاص بك", label_address: "عنوان التوصيل", label_city: "المدينة", btn_send_wa: "إرسال الطلب عبر الواتساب",
+      confirm_title: "تم إرسال الطلب", confirm_eyebrow: "لقد اقتربت", confirm_h3: "الواتساب مفتوح الآن.", confirm_p1: "لقد سجلنا عدد {num} قطعة بمبلغ ${price}.", confirm_p2: "أرسل الرسالة التي فتحت في الواتساب لتأكيد طلبك معنا — هناك سنقوم بترتيب الدفع والتوصيل.", btn_continue: "مواصلة التسوق",
+      stock_status: "متوفر في المخزن", sold_out: "نفدت الكمية", add_bag: "أضف للحقيبة"
+    }
+  };
+
+  function applyTranslations() {
+    const lang = currentLang;
+    const dict = T_DICT[lang];
+    
+    // Set layout dynamic properties
+    document.documentElement.setAttribute('lang', lang);
+    if (lang === 'ku' || lang === 'ar') {
+      document.documentElement.setAttribute('dir', 'rtl');
+    } else {
+      document.documentElement.setAttribute('dir', 'ltr');
+    }
+
+    // Translate statically tagged properties
+    document.querySelectorAll('[data-t]').forEach(el => {
+      const key = el.getAttribute('data-t');
+      if (dict[key]) {
+        el.textContent = dict[key];
+      }
+    });
+
+    // Handle interactive dynamic elements placeholders
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.placeholder = dict.search_placeholder;
+
+    // Refresh dynamic layouts with new translations built-in
+    renderShop();
+    renderCart();
+    if (document.getElementById('orders-view').style.display !== 'none') {
+      routeOrdersView(auth.currentUser);
+    }
+
+    requestAnimationFrame(() => {
+      const activeBtn = document.querySelector('.tab-btn.active');
+      moveTabIndicator(activeBtn);
+    });
+  }
+
+  const CAT_LABELS = { 
+    WMN: () => T_DICT[currentLang].cat_wmn, 
+    MEN: () => T_DICT[currentLang].cat_men, 
+    ACC: () => T_DICT[currentLang].cat_acc, 
+    SHO: () => T_DICT[currentLang].cat_sho, 
+    HME: () => T_DICT[currentLang].cat_hme, 
+    BTY: () => T_DICT[currentLang].cat_bty, 
+    KID: () => T_DICT[currentLang].cat_kid, 
+    FRG: () => T_DICT[currentLang].cat_frg 
+  };
+
+  const ORDERS_KEY = 'asiora-orders'; 
   const ADMIN_EMAIL = 'jawher.haval@gmail.com';
 
-  // ═══════════════════════════════════════════════════════════════════
-  // Products now live in Firebase (Firestore), not in this file.
-  // Add, edit, or remove pieces from the "Admin" tab on the live site —
-  // changes appear for every visitor immediately, no code edits needed.
-  //
-  // The list below is only used ONCE, the very first time the database
-  // is empty, to seed it with a starting catalog. After that it's ignored.
-  // ═══════════════════════════════════════════════════════════════════
   const SEED_DEFAULTS = [
     { name:'Wool Overcoat', price:340, stock:6, category:'WMN', image:'https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&q=70', desc:'Heavyweight handloom wool, ivory.' },
     { name:'Leather Tote', price:210, stock:9, category:'ACC', image:'https://images.unsplash.com/photo-1542060748-10c28b62716f?w=500&q=70', desc:'Vegetable-tanned leather, brass hardware.' },
@@ -1017,14 +1179,14 @@
   const productsCol = db.collection('products');
   const ordersCol = db.collection('orders');
 
-  let products = []; // live product list, synced from Firestore
-  let editingId = null; // product currently being edited in admin form
+  let products = []; 
+  let editingId = null; 
 
   let orders = [];
   let activeFilter = 'ALL';
   let searchQuery = '';
-  let cart = []; // { id, qty }
-  let cartView = 'bag'; // 'bag' | 'checkout' | 'confirm'
+  let cart = []; 
+  let cartView = 'bag'; 
 
   const grid = document.getElementById('productGrid');
   const ordersListEl = document.getElementById('ordersList');
@@ -1063,24 +1225,19 @@
     }catch(e){
       orders = [];
     }
-    // Start listening immediately — don't block the storefront on the
-    // one-time seed check. Seeding runs quietly in the background and
-    // only ever writes anything the very first time the database is empty.
     listenProducts();
     seedIfEmpty().catch(e => console.error('Seeding error', e));
   }
 
-  let ordersUnsub = null; // active Firestore listener for the signed-in customer's orders
+  let ordersUnsub = null; 
 
   async function saveOrderRecord(order){
-    // Always keep a local fallback copy (covers guests who never sign in).
     try{
       orders = [order, ...orders];
       localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
     }catch(e){
       console.error('Could not save order locally', e);
     }
-    // If signed in, also save to the cloud so it's visible from any device.
     const user = auth.currentUser;
     if(user && user.email !== ADMIN_EMAIL){
       try{
@@ -1093,7 +1250,7 @@
 
   function renderOrderList(container, list){
     if(list.length === 0){
-      container.innerHTML = `<div class="empty-state"><p>No orders yet. Anything you order through WhatsApp will show up here.</p></div>`;
+      container.innerHTML = `<div class="empty-state"><p>${T_DICT[currentLang].cart_empty}</p></div>`;
       return;
     }
     container.innerHTML = list.map(o => `
@@ -1101,7 +1258,7 @@
         <div class="order-card-head">
           <div>
             <h4>${escapeHtml(o.id)}</h4>
-            <div class="order-meta">${new Date(o.date).toLocaleString()} · <span class="wa-badge">${escapeHtml(o.status || 'Sent via WhatsApp')}</span></div>
+            <div class="order-meta">${new Date(o.date).toLocaleString(currentLang)} · <span class="wa-badge">${escapeHtml(o.status || 'Sent via WhatsApp')}</span></div>
           </div>
           <div class="order-total">$${Number(o.total).toFixed(2)}</div>
         </div>
@@ -1114,7 +1271,6 @@
   }
 
   function renderOrders(){
-    // Guests (not signed in, or signed in as admin) just see this browser's local history.
     if(!ordersListEl) return;
     renderOrderList(ordersListEl, orders);
   }
@@ -1136,6 +1292,8 @@
   }
 
   function buildProductCard(p, i){
+    const stockLabel = p.stock > 0 ? `${p.stock} ${T_DICT[currentLang].stock_status}` : T_DICT[currentLang].sold_out;
+    const btnLabel = p.stock <= 0 ? T_DICT[currentLang].sold_out : T_DICT[currentLang].add_bag;
     return `
       <div class="card" style="animation-delay:${Math.min(i,8) * 60}ms">
         <div class="card-img${p.image ? ' is-loading' : ''}">
@@ -1143,13 +1301,13 @@
           ${p.image ? `<img src="${escapeAttr(p.image)}" alt="${escapeAttr(p.name)}" loading="lazy" onload="this.classList.add('loaded');this.closest('.card-img').classList.remove('is-loading')" onerror="this.closest('.card-img').classList.remove('is-loading');this.parentElement.innerHTML+='<span class=&quot;ph&quot;>Image unavailable</span>'">` : `<span class="ph">No image</span>`}
         </div>
         <div class="card-body">
-          <h4>${escapeHtml(p.name)}</h4>
+          <h4 dir="auto">${escapeHtml(p.name)}</h4>
           <div class="card-meta">
             <span class="card-price">$${Number(p.price).toFixed(2)}</span>
-            <span class="card-stock">${p.stock > 0 ? p.stock + ' in stock' : 'sold out'}</span>
+            <span class="card-stock">${stockLabel}</span>
           </div>
-          ${p.desc ? `<div class="card-desc">${escapeHtml(p.desc)}</div>` : ''}
-          <button class="add-cart-btn" data-id="${p.id}" ${p.stock <= 0 ? 'disabled' : ''}>${p.stock <= 0 ? 'Sold out' : 'Add to bag'}</button>
+          ${p.desc ? `<div class="card-desc" dir="auto">${escapeHtml(p.desc)}</div>` : ''}
+          <button class="add-cart-btn" data-id="${p.id}" ${p.stock <= 0 ? 'disabled' : ''}>${btnLabel}</button>
         </div>
       </div>
     `;
@@ -1162,6 +1320,7 @@
   }
 
   function renderShop(){
+    if(!grid) return;
     const items = allProducts().filter(p => {
       const matchesCat = activeFilter === 'ALL' || p.category === activeFilter;
       const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery) || (p.desc && p.desc.toLowerCase().includes(searchQuery));
@@ -1183,14 +1342,12 @@
     if(!fragGrid) return;
     const fragItems = allProducts().filter(p => p.category === 'FRG');
     if(fragItems.length === 0){
-      fragGrid.innerHTML = `<div class="empty-state"><p>Fragrance is on its way — check back soon.</p></div>`;
+      fragGrid.innerHTML = `<div class="empty-state"><p dir="auto">${T_DICT[currentLang].fragrance_empty}</p></div>`;
       return;
     }
     fragGrid.innerHTML = fragItems.map((p,i) => buildProductCard(p,i)).join('');
     wireAddToBagButtons(fragGrid);
   }
-
-
 
   function escapeHtml(str){
     return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -1207,8 +1364,12 @@
     renderShop();
   });
 
-  // ---- tabs ----
-  // ---- hidden admin access via URL hash (#admin) — no visible button ----
+  // ---- language selector switch listener ----
+  document.getElementById('langSelector').addEventListener('change', (e) => {
+    currentLang = e.target.value;
+    applyTranslations();
+  });
+
   function moveTabIndicator(activeBtn){
     const indicator = document.getElementById('tabIndicator');
     if(!indicator || !activeBtn){ return; }
@@ -1233,7 +1394,7 @@
       if(shouldShow){
         el.style.display = 'block';
         el.classList.remove('view-panel');
-        void el.offsetWidth; // restart animation
+        void el.offsetWidth; 
         el.classList.add('view-panel');
       } else {
         el.style.display = 'none';
@@ -1275,7 +1436,7 @@
 
   function pulseBag(){
     bagCount.classList.remove('pulse');
-    void bagCount.offsetWidth; // restart animation
+    void bagCount.offsetWidth; 
     bagCount.classList.add('pulse');
   }
 
@@ -1314,7 +1475,7 @@
     if(btn){
       flyTagToBag(btn, product.category);
       const original = btn.textContent;
-      btn.textContent = 'Added ✓';
+      btn.textContent = '✓';
       btn.classList.add('added');
       setTimeout(()=>{ btn.textContent = original; btn.classList.remove('added'); }, 1200);
     }
@@ -1363,38 +1524,41 @@
   }
 
   function renderCart(){
-    if(cartView === 'confirm'){ return; } // confirm view renders itself and stays until closed
+    if(cartView === 'confirm'){ return; } 
     if(cartView === 'checkout'){ renderCheckoutView(); return; }
 
-    cartTitle.textContent = 'Your bag';
+    if(cartTitle) cartTitle.textContent = T_DICT[currentLang].cart_title;
     const lines = cartLines();
 
     if(lines.length === 0){
-      cartBody.innerHTML = `<div class="cart-empty">Your bag is empty. Add a piece from the storefront.</div>`;
+      cartBody.innerHTML = `<div class="cart-empty">${T_DICT[currentLang].cart_empty}</div>`;
       cartFoot.innerHTML = '';
       return;
     }
 
-    cartBody.innerHTML = lines.map((l,i) => `
-      <div class="cart-item" style="animation-delay:${i * 60}ms">
-        ${l.image ? `<img src="${escapeAttr(l.image)}" alt="" onerror="this.style.display='none'">` : `<div class="cart-item-ph"></div>`}
-        <div class="cart-item-info">
-          <h5>${escapeHtml(l.name)}</h5>
-          <div class="cart-item-meta">${CAT_LABELS[l.category] || l.category}</div>
-          <div class="qty-stepper">
-            <button data-id="${l.id}" data-delta="-1" aria-label="Decrease quantity">−</button>
-            <span>${l.qty}</span>
-            <button data-id="${l.id}" data-delta="1" aria-label="Increase quantity">+</button>
+    cartBody.innerHTML = lines.map((l,i) => {
+      const catLabel = typeof CAT_LABELS[l.category] === 'function' ? CAT_LABELS[l.category]() : l.category;
+      return `
+        <div class="cart-item" style="animation-delay:${i * 60}ms">
+          ${l.image ? `<img src="${escapeAttr(l.image)}" alt="" onerror="this.style.display='none'">` : `<div class="cart-item-ph"></div>`}
+          <div class="cart-item-info">
+            <h5>${escapeHtml(l.name)}</h5>
+            <div class="cart-item-meta">${catLabel}</div>
+            <div class="qty-stepper">
+              <button data-id="${l.id}" data-delta="-1" aria-label="Decrease quantity">−</button>
+              <span>${l.qty}</span>
+              <button data-id="${l.id}" data-delta="1" aria-label="Increase quantity">+</button>
+            </div>
+            <button class="cart-item-remove" data-remove="${l.id}">${T_DICT[currentLang].btn_remove}</button>
           </div>
-          <button class="cart-item-remove" data-remove="${l.id}">Remove</button>
+          <div class="cart-item-price">$${(l.price * l.qty).toFixed(2)}</div>
         </div>
-        <div class="cart-item-price">$${(l.price * l.qty).toFixed(2)}</div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     cartFoot.innerHTML = `
-      <div class="cart-subtotal"><span>Subtotal</span><span>$${subtotal(lines).toFixed(2)}</span></div>
-      <button class="submit-btn" id="checkoutBtn">Order via WhatsApp</button>
+      <div class="cart-subtotal"><span>${T_DICT[currentLang].cart_subtotal}</span><span>$${subtotal(lines).toFixed(2)}</span></div>
+      <button class="submit-btn" id="checkoutBtn">${T_DICT[currentLang].btn_checkout}</button>
     `;
 
     cartBody.querySelectorAll('.qty-stepper button').forEach(btn=>{
@@ -1410,23 +1574,23 @@
   }
 
   function renderCheckoutView(){
-    cartTitle.textContent = 'Order details';
+    if(cartTitle) cartTitle.textContent = T_DICT[currentLang].checkout_title;
     const lines = cartLines();
 
     cartBody.innerHTML = `
       <form id="checkoutForm" class="checkout-form">
-        <div class="side-note" style="margin-bottom:20px;">No payment happens here — you'll send this order straight to us on WhatsApp to confirm and arrange payment.</div>
-        <div class="field"><label for="co-name">Full name</label><input type="text" id="co-name" required></div>
-        <div class="field"><label for="co-phone">Your WhatsApp number</label><input type="tel" id="co-phone" placeholder="e.g. 0750 000 0000" required></div>
-        <div class="field"><label for="co-address">Delivery address</label><input type="text" id="co-address" required></div>
-        <div class="field"><label for="co-city">City</label><input type="text" id="co-city" required></div>
+        <div class="side-note" style="margin-bottom:20px;">${T_DICT[currentLang].checkout_note}</div>
+        <div class="field"><label for="co-name">${T_DICT[currentLang].label_name}</label><input type="text" id="co-name" required></div>
+        <div class="field"><label for="co-phone">${T_DICT[currentLang].label_phone}</label><input type="tel" id="co-phone" placeholder="e.g. 0750 000 0000" required></div>
+        <div class="field"><label for="co-address">${T_DICT[currentLang].label_address}</label><input type="text" id="co-address" required></div>
+        <div class="field"><label for="co-city">${T_DICT[currentLang].label_city}</label><input type="text" id="co-city" required></div>
         <div class="form-msg" id="checkoutMsg"></div>
       </form>
     `;
     cartFoot.innerHTML = `
-      <div class="cart-subtotal"><span>Total</span><span>$${subtotal(lines).toFixed(2)}</span></div>
-      <button class="submit-btn whatsapp-btn" id="placeOrderBtn">Send order on WhatsApp</button>
-      <button class="btn-ghost-cart" id="backToBagBtn" style="width:100%;background:none;border:none;color:var(--bone-dim);font-family:var(--mono);font-size:11px;margin-top:12px;padding:6px;">← Back to bag</button>
+      <div class="cart-subtotal"><span>${T_DICT[currentLang].cart_total}</span><span>$${subtotal(lines).toFixed(2)}</span></div>
+      <button class="submit-btn whatsapp-btn" id="placeOrderBtn">${T_DICT[currentLang].btn_send_wa}</button>
+      <button class="btn-ghost-cart" id="backToBagBtn" style="width:100%;background:none;border:none;color:var(--bone-dim);font-family:var(--mono);font-size:11px;margin-top:12px;padding:6px;">${T_DICT[currentLang].btn_back_bag}</button>
     `;
 
     document.getElementById('backToBagBtn').addEventListener('click', () => { cartView = 'bag'; renderCart(); });
@@ -1468,17 +1632,22 @@
 
   function renderConfirmation(orderId, lines){
     cartView = 'confirm';
-    cartTitle.textContent = 'Order sent';
+    if(cartTitle) cartTitle.textContent = T_DICT[currentLang].confirm_title;
+    
+    let confirmationText = T_DICT[currentLang].confirm_p1
+                            .replace('{num}', lines.length)
+                            .replace('{price}', subtotal(lines).toFixed(2));
+
     cartBody.innerHTML = `
       <div class="order-confirm">
-        <div class="eyebrow">Almost there</div>
-        <h3>WhatsApp is open.</h3>
-        <p>We've noted ${lines.length} piece${lines.length>1?'s':''} for $${subtotal(lines).toFixed(2)}.</p>
+        <div class="eyebrow">${T_DICT[currentLang].confirm_eyebrow}</div>
+        <h3>${T_DICT[currentLang].confirm_h3}</h3>
+        <p>${confirmationText}</p>
         <p class="order-id">Order ${orderId}</p>
-        <p style="margin-top:18px;">Send the message that opened in WhatsApp to confirm your order with us — that's where we'll sort out payment and delivery.</p>
+        <p style="margin-top:18px;">${T_DICT[currentLang].confirm_p2}</p>
       </div>
     `;
-    cartFoot.innerHTML = `<button class="submit-btn" id="continueShoppingBtn">Continue shopping</button>`;
+    cartFoot.innerHTML = `<button class="submit-btn" id="continueShoppingBtn">${T_DICT[currentLang].btn_continue}</button>`;
     document.getElementById('continueShoppingBtn').addEventListener('click', () => {
       cartView = 'bag';
       renderCart();
@@ -1501,8 +1670,8 @@
   const imageInput = document.getElementById('p-image');
   const imagePreview = document.getElementById('p-preview');
 
-  // populate the category dropdown from CAT_LABELS
-  categorySelect.innerHTML = Object.entries(CAT_LABELS).map(([code,label]) => `<option value="${code}">${label}</option>`).join('');
+  const STATIC_CAT_LABELS = { WMN:'Womenswear', MEN:'Menswear', ACC:'Accessories', SHO:'Footwear', HME:'Home & Living', BTY:'Apothecary', KID:'Kidswear', FRG:'Fragrance' };
+  categorySelect.innerHTML = Object.entries(STATIC_CAT_LABELS).map(([code,label]) => `<option value="${code}">${label}</option>`).join('');
 
   imageInput.addEventListener('input', () => {
     const url = imageInput.value.trim();
@@ -1551,13 +1720,13 @@
       authBox.style.display = 'none';
       ordersBox.style.display = 'block';
       document.getElementById('accEmailLabel').textContent = user.email;
-      subhead.textContent = 'Synced to your account — visible from any device you sign in on.';
+      if (subhead) subhead.textContent = 'Synced to your account — visible from any device you sign in on.';
       listenAccountOrders(user.uid);
     } else {
       if(ordersUnsub){ ordersUnsub(); ordersUnsub = null; }
       authBox.style.display = 'grid';
       ordersBox.style.display = 'none';
-      subhead.textContent = 'Orders placed on this device.';
+      if (subhead) subhead.textContent = T_DICT[currentLang].account_subhead;
       renderOrders();
     }
   }
@@ -1702,7 +1871,7 @@
 
   function renderAdminListings(){
     if(!adminListingsEl) return;
-    if(!auth.currentUser) return; // don't bother rendering while logged out
+    if(!auth.currentUser) return; 
     if(products.length === 0){
       adminListingsEl.innerHTML = `<div class="empty-state"><p>No pieces yet. Add your first one using the form.</p></div>`;
       return;
@@ -1712,7 +1881,7 @@
         ${p.image ? `<img src="${escapeAttr(p.image)}" alt="" onerror="this.style.display='none'">` : `<div class="listing-ph"></div>`}
         <div class="listing-info">
           <h5>${escapeHtml(p.name)}</h5>
-          <span>${CAT_LABELS[p.category] || p.category} · $${Number(p.price).toFixed(2)} · ${p.stock} in stock</span>
+          <span>${STATIC_CAT_LABELS[p.category] || p.category} · $${Number(p.price).toFixed(2)} · ${p.stock} in stock</span>
         </div>
         <button class="listing-del" data-edit="${p.id}" style="margin-right:6px;">Edit</button>
         <button class="listing-del" data-del="${p.id}">Delete</button>
@@ -1759,9 +1928,9 @@
     if(loadScreen){ loadScreen.classList.add('hidden'); }
   }
   window.addEventListener('load', () => setTimeout(hideLoadScreen, prefersReducedMotion ? 0 : 500));
-  setTimeout(hideLoadScreen, 2500); // safety fallback so a slow asset never traps the visitor
+  setTimeout(hideLoadScreen, 2500); 
 
-  // ---- scroll progress + header blur (single rAF-throttled scroll handler) ----
+  // ---- scroll progress + header blur ----
   const scrollProgressEl = document.getElementById('scrollProgress');
   const headerEl = document.getElementById('siteHeader');
   let scrollTicking = false;
@@ -1778,7 +1947,7 @@
   }, { passive:true });
   onScrollFrame();
 
-  // ---- cursor glow (fine pointers only, respects reduced motion) ----
+  // ---- cursor glow ----
   if(!prefersReducedMotion && window.matchMedia('(pointer:fine)').matches){
     const glow = document.getElementById('cursorGlow');
     let glowTicking = false, gx = 0, gy = 0;
@@ -1795,7 +1964,7 @@
     }, { passive:true });
   }
 
-  // ---- magnetic buttons (fine pointers only) ----
+  // ---- magnetic buttons ----
   if(!prefersReducedMotion && window.matchMedia('(pointer:fine)').matches){
     document.querySelectorAll('.magnetic').forEach(btn => {
       btn.addEventListener('mousemove', (e) => {
@@ -1808,7 +1977,7 @@
     });
   }
 
-  // ---- hero floating particles (decorative, skipped entirely under reduced motion) ----
+  // ---- hero floating particles ----
   if(!prefersReducedMotion){
     const heroParticlesEl = document.getElementById('heroParticles');
     if(heroParticlesEl){
@@ -1824,7 +1993,7 @@
     }
   }
 
-  // ---- fragrance CTA: jump to storefront filtered to Fragrance ----
+  // ---- fragrance CTA ----
   document.getElementById('frag-cta')?.addEventListener('click', () => {
     document.querySelector('.chip[data-cat="FRG"]')?.click();
     document.getElementById('searchInput')?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block:'center' });
