@@ -149,6 +149,7 @@
     font-style:italic;font-weight:500;font-size:24px;
     display:flex;align-items:center;gap:10px;
     direction: ltr; /* Keeps brand text from flipping backward in RTL */
+    flex-shrink:0;
   }
   .logo span{color:var(--brass);font-style:normal;}
   .logo-text{ white-space:nowrap; letter-spacing:0; }
@@ -194,6 +195,11 @@
     border-radius:30px;
     padding:4px;
     position:relative;
+    min-width:0;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
     direction: ltr; /* Ensures JavaScript slider calculations stay precise */
   }
   .tab-indicator{
@@ -208,8 +214,11 @@
     padding:9px 20px;border-radius:24px;
     transition:color .25s ease;
     position:relative;z-index:1;
+    flex-shrink:0;
+    white-space:nowrap;
   }
   .tab-btn.active{ color:var(--ink); font-weight:700; }
+  .tabs::-webkit-scrollbar{ display:none; }
   
   /* Language Switcher Styling */
   .lang-selector{
@@ -229,6 +238,7 @@
     display:flex;
     align-items:center;
     gap:12px;
+    flex-shrink:0;
   }
 
   html[dir="rtl"] .eyebrow::before {
@@ -913,12 +923,14 @@
     .field-row{ grid-template-columns:1fr; }
   }
   @media (max-width:480px){
-    nav.wrap{ height:64px; }
+    nav.wrap{ height:64px;gap:6px; }
     .logo{ font-size:17px; gap:7px; }
     .logo-mark{ width:26px;height:26px;font-size:13px;border-radius:5px; }
-    .tabs{ gap:2px;padding:3px; }
+    .tabs{ gap:2px;padding:3px;max-width:34vw; }
     .tab-btn{ padding:7px 11px;font-size:10px;letter-spacing:0.04em; }
     .bag-count{ width:30px;height:30px;font-size:11px; }
+    .nav-actions{ gap:6px; }
+    .lang-selector{ font-size:9px;padding:5px 6px; }
   }
   /* ---- footer ---- */
   footer{
@@ -996,7 +1008,7 @@
   .tabs{ gap:1px; }
   .tab-btn{ padding:7px 9px;font-size:9px; }
   .nav-actions{ gap:8px; }
-  .lang-selector{ display:none; }
+  .lang-selector{ font-size:10px; padding:5px 7px; }
 }
 
 /* ---- generic page hero (about / fragrance intro) ---- */
