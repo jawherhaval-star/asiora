@@ -16,7 +16,9 @@ const PROJECT_ID = 'asiora-c2097';
 // Public Firebase web key — the same one the storefront ships in index.html.
 const API_KEY = 'AIzaSyA7JuCwYZk8h9mguDG0UfQjzvUPk66ruJQ';
 const SITE = 'https://asioraofficial.com';
-const FALLBACK_IMAGE = `${SITE}/images/og-asiora.jpg`;
+// Shared links show only the ASIORA logo and the word ASIORA (owner's choice).
+const PREVIEW_IMAGE = `${SITE}/images/og-logo.jpg`;
+const FALLBACK_IMAGE = PREVIEW_IMAGE;
 const OUT_DIR = 'p';
 
 const CATEGORY_LABELS = {
@@ -120,23 +122,22 @@ function pageFor(p) {
   };
 
   const head = `<title>${esc(title)}</title>
-<meta name="description" content="${esc(description)}">
 <meta name="theme-color" content="#F3EEE5">
 <link rel="canonical" href="${esc(url)}">
-<meta property="og:type" content="product">
+<meta property="og:type" content="website">
 <meta property="og:site_name" content="ASIORA">
 <meta property="og:url" content="${esc(url)}">
-<meta property="og:title" content="${esc(title)}">
-<meta property="og:description" content="${esc(description)}">
-<meta property="og:image" content="${esc(image)}">
-<meta property="og:image:secure_url" content="${esc(image)}">
-<meta property="og:image:alt" content="${esc(name)}">
-<meta property="product:price:amount" content="${price}">
-<meta property="product:price:currency" content="IQD">
+<meta property="og:title" content="ASIORA">
+<meta property="og:image" content="${PREVIEW_IMAGE}">
+<meta property="og:image:secure_url" content="${PREVIEW_IMAGE}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ASIORA">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${esc(title)}">
-<meta name="twitter:description" content="${esc(description)}">
-<meta name="twitter:image" content="${esc(image)}">
+<meta name="twitter:title" content="ASIORA">
+<meta name="twitter:image" content="${PREVIEW_IMAGE}">
+<meta name="twitter:image:alt" content="ASIORA">
 <script type="application/ld+json">
 ${jsonLd(product)}
 </script>
