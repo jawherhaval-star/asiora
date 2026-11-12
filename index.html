@@ -308,8 +308,13 @@
     padding:19px 38px;border-radius:0;cursor:pointer;
     transition:background .35s ease, color .35s ease, border-color .35s ease;
   }
-  .btn-lux{ background:var(--text);color:var(--paper);border:1px solid var(--text); }
-  .btn-lux:hover{ background:transparent;color:var(--text); }
+  .btn-lux{
+    color:var(--paper);border:1px solid var(--text);
+    background:linear-gradient(var(--paper),var(--paper)) no-repeat left / 0% 100%, var(--text);
+    transition:background-size .55s var(--ease-out), color .45s ease;
+  }
+  .btn-lux:hover{ background-size:100% 100%, auto;color:var(--text); }
+  html[dir="rtl"] .btn-lux{ background-position:right, 0 0; }
   .btn-lux-ghost{ background:transparent;color:var(--text);border:1px solid var(--rule-strong); }
   .btn-lux-ghost:hover{ border-color:var(--text); }
   .text-link{
@@ -341,6 +346,9 @@
   .hline{ display:block;overflow:hidden;padding-bottom:0.08em; }
   .hword{ display:inline-block;animation:wordUp 1.3s var(--ease-out) both; }
   .hline:nth-child(2) .hword{ animation-delay:.14s; font-style:italic; }
+  .hero-title .hline .hword.gold-text{
+    animation:wordUp 1.3s var(--ease-out) .14s both, goldSheen 7s ease-in-out 1.8s infinite;
+  }
   @keyframes wordUp{ from{ transform:translateY(105%); } to{ transform:none; } }
   .hero-sub{
     margin:34px auto 0;max-width:420px;
@@ -660,7 +668,10 @@
     padding:18px;border-radius:0;margin-top:8px;position:relative;
     transition:background .35s ease, color .35s ease;
   }
-  .submit-btn:hover{ background:transparent;color:var(--text); }
+  .submit-btn{ background:linear-gradient(var(--paper),var(--paper)) no-repeat left / 0% 100%, var(--text);
+    transition:background-size .55s var(--ease-out), color .45s ease; }
+  .submit-btn:hover{ background-size:100% 100%, auto;color:var(--text); }
+  html[dir="rtl"] .submit-btn{ background-position:right, 0 0; }
   .submit-btn:disabled{ opacity:.45;cursor:not-allowed; }
   .submit-btn.loading{ color:transparent !important;pointer-events:none; }
   .submit-btn.loading::after{
@@ -723,9 +734,8 @@
   .story-grid.reverse{ grid-template-columns:0.9fr 1.1fr; }
   .story-grid.reverse .story-media{ order:2; }
   .story-media{ position:relative;overflow:hidden;aspect-ratio:4/5;background:var(--paper-2); }
-  .story-media img{ width:100%;height:100%;object-fit:cover;transition:transform 2s var(--ease-out); }
-  .story-section.in-view .story-media img{ transform:scale(1.0); }
-  .story-section .story-media img{ transform:scale(1.06); }
+  .story-media img{ width:100%;height:100%;object-fit:cover;
+    transform:translate3d(0,var(--py,0px),0) scale(1.12);will-change:transform; }
   .story-copy .eyebrow{ margin-bottom:22px; }
   .story-copy h2{
     font-family:var(--serif);font-weight:300;font-size:clamp(34px,4vw,56px);
@@ -934,6 +944,90 @@
     .pd-notes-list{ font-size:18px; }
   }
 
+
+  /* =================== motion =================== */
+  /* Gold sheen across highlight words */
+  @keyframes goldSheen{
+    0%,62%{ background-position:150% 0; }
+    100%{ background-position:-50% 0; }
+  }
+  .page-hero h1 .gold-text, .hero-title .gold-text{
+    background:linear-gradient(110deg, var(--gold) 0%, var(--gold) 40%, #f6e7c1 50%, var(--gold) 60%, var(--gold) 100%);
+    background-size:250% 100%;background-position:150% 0;
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:var(--gold);
+    padding-right:.08em; /* keep the italic overhang inside the clip */
+  }
+  .page-hero h1 .gold-text{ animation:goldSheen 7s ease-in-out 2.2s infinite; }
+
+  /* Headline lines rise into place */
+  .page-hero h1.reveal{ transform:none; }
+  .page-hero h1.reveal > span{
+    display:inline-block;
+    clip-path:inset(-10% -10% 100% -10%);transform:translateY(35%);
+    transition:clip-path 1.2s var(--ease-out), transform 1.2s var(--ease-out);
+  }
+  .page-hero h1.reveal > span + br + span{ transition-delay:.14s; }
+  .page-hero h1.reveal.in-view > span{ clip-path:inset(-10% -10% -25% -10%);transform:none; }
+
+  /* Eyebrow rules draw in */
+  .reveal .eyebrow::before, .eyebrow.reveal::before{
+    transform:scaleX(0);transform-origin:left center;transition:transform 1s var(--ease-out) .35s;
+  }
+  html[dir="rtl"] .reveal .eyebrow::before, html[dir="rtl"] .eyebrow.reveal::before{ transform-origin:right center; }
+  .reveal.in-view .eyebrow::before, .eyebrow.reveal.in-view::before{ transform:scaleX(1); }
+
+  /* Curtain wipe on photos */
+  .story-media::after, .frag-visual::after{
+    content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:var(--paper-2);transform-origin:right center;
+    transition:transform 1.5s cubic-bezier(.77,0,.18,1) .15s;
+  }
+  .frag-visual::after{ background:var(--paper); }
+  html[dir="rtl"] .story-media::after, html[dir="rtl"] .frag-visual::after{ transform-origin:left center; }
+  .story-section.in-view .story-media::after, .frag-visual.in-view::after{ transform:scaleX(0); }
+
+  /* Marquee band */
+  .marquee{
+    margin:0 calc(50% - 50vw);overflow:hidden;
+    background:var(--midnight);color:var(--ivory);
+    padding:22px 0;direction:ltr;
+  }
+  .hero + .marquee{ margin-top:-96px;margin-bottom:96px; }
+  .values-section + .marquee{ margin-bottom:0; }
+  .marquee-track{ display:flex;width:max-content;animation:marquee 46s linear infinite; }
+  html[dir="rtl"] .marquee-track{ animation-direction:reverse; }
+  .marquee:hover .marquee-track{ animation-play-state:paused; }
+  .marquee-group{ display:flex;align-items:center;flex-shrink:0; }
+  .marquee-group span{
+    font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(20px,2.2vw,30px);
+    white-space:nowrap;padding:0 34px;
+  }
+  .marquee-group i{ font-style:normal;color:var(--gold);font-size:12px; }
+  html[lang="ku"] .marquee-group span, html[lang="ar"] .marquee-group span{ font-family:'Noto Naskh Arabic',serif;font-style:normal;font-size:clamp(18px,2vw,26px); }
+  @keyframes marquee{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+  /* Product page: notes rows arrive one by one */
+  @keyframes rowIn{ from{ opacity:0;transform:translateY(8px); } to{ opacity:1;transform:none; } }
+  .pd-info > *{ animation:rowIn .8s var(--ease-out) both; }
+  .pd-info > *:nth-child(2){ animation-delay:.06s; } .pd-info > *:nth-child(3){ animation-delay:.12s; }
+  .pd-info > *:nth-child(4){ animation-delay:.18s; } .pd-info > *:nth-child(5){ animation-delay:.24s; }
+  .pd-info > *:nth-child(n+6){ animation-delay:.3s; }
+  .pd-notes-row{ animation:rowIn .7s var(--ease-out) both; }
+  .pd-notes-row:nth-of-type(2){ animation-delay:.35s; } .pd-notes-row:nth-of-type(3){ animation-delay:.45s; } .pd-notes-row:nth-of-type(4){ animation-delay:.55s; }
+
+  @media (max-width:760px){
+    .hero + .marquee{ margin-top:-72px;margin-bottom:72px; }
+    .marquee{ padding:16px 0; }
+    .marquee-group span{ padding:0 22px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .marquee-track{ animation:none !important; }
+    .story-media::after, .frag-visual::after{ display:none; }
+    .page-hero h1.reveal > span{ clip-path:none !important;transform:none !important; }
+    .story-media img{ transform:scale(1.04) !important; }
+  }
+
   :focus-visible{ outline:1px solid var(--text);outline-offset:4px; }
 
   /* ---------- responsive ---------- */
@@ -1054,7 +1148,7 @@
 
   <section class="story-section reveal">
     <div class="story-grid">
-      <div class="story-media">
+      <div class="story-media" data-parallax>
         <img src="images/about-mountains.webp" width="1400" height="787" loading="lazy" decoding="async" alt="Snow-capped Kurdistan mountain peak under a full moon">
       </div>
       <div class="story-copy">
@@ -1068,7 +1162,7 @@
 
   <section class="story-section reveal">
     <div class="story-grid reverse">
-      <div class="story-media">
+      <div class="story-media" data-parallax>
         <img src="images/about-citadel.webp" width="1400" height="727" loading="lazy" decoding="async" alt="Erbil Citadel illuminated at night">
       </div>
       <div class="story-copy">
@@ -1100,6 +1194,10 @@
       </div>
     </div>
   </section>
+
+  <div class="marquee" aria-hidden="true">
+      <div class="marquee-track"><div class="marquee-group"><span data-t="mq_1">Erbil, Kurdistan</span><i>✦</i><span data-t="mq_2">Considered, always</span><i>✦</i><span data-t="mq_3">Made by hand</span><i>✦</i><span data-t="mq_4">Rooted in the mountains</span><i>✦</i></div><div class="marquee-group"><span data-t="mq_1">Erbil, Kurdistan</span><i>✦</i><span data-t="mq_2">Considered, always</span><i>✦</i><span data-t="mq_3">Made by hand</span><i>✦</i><span data-t="mq_4">Rooted in the mountains</span><i>✦</i></div></div>
+    </div>
 
   <section class="founder-note reveal">
     <div class="founder-note-inner">
@@ -1205,6 +1303,10 @@
       </div>
       <div class="scroll-indicator" aria-hidden="true"><span></span></div>
     </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track"><div class="marquee-group"><span data-t="mq_1">Erbil, Kurdistan</span><i>✦</i><span data-t="mq_2">Considered, always</span><i>✦</i><span data-t="mq_3">Made by hand</span><i>✦</i><span data-t="mq_4">Rooted in the mountains</span><i>✦</i></div><div class="marquee-group"><span data-t="mq_1">Erbil, Kurdistan</span><i>✦</i><span data-t="mq_2">Considered, always</span><i>✦</i><span data-t="mq_3">Made by hand</span><i>✦</i><span data-t="mq_4">Rooted in the mountains</span><i>✦</i></div></div>
+    </div>
 
     <div class="page-head reveal">
       <div>
@@ -1543,6 +1645,27 @@
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   }
 
+  // ---- gentle parallax on About photos ----
+  if(!prefersReducedMotion){
+    let parallaxTicking = false;
+    const updateParallax = () => {
+      const vh = window.innerHeight;
+      document.querySelectorAll('[data-parallax]').forEach(el => {
+        const r = el.getBoundingClientRect();
+        if(r.height === 0 || r.bottom < -100 || r.top > vh + 100) return;
+        const offset = ((r.top + r.height / 2) - vh / 2) / vh; // -1 … 1
+        el.style.setProperty('--py', (offset * -36).toFixed(1) + 'px');
+      });
+      parallaxTicking = false;
+    };
+    window.addEventListener('scroll', () => {
+      if(!parallaxTicking){ requestAnimationFrame(updateParallax); parallaxTicking = true; }
+    }, { passive:true });
+    window.addEventListener('resize', updateParallax);
+    window.addEventListener('hashchange', () => setTimeout(updateParallax, 260));
+    updateParallax();
+  }
+
   // ---- top nav indicator (based on body[data-page]) ----
   // `animate=false` snaps the pill into place instantly (used for automatic
   // re-syncs triggered by layout shifts, e.g. webfont swap, select box
@@ -1660,7 +1783,8 @@
       pd_payment_t: "Payment", pd_payment: "Pay on delivery. No account or card needed.",
       pd_related: "You may also like", pd_not_found: "This piece is no longer available.", pd_ask_msg: "Hi! I'm interested in",
       main_color_label: "Main", foot_storefront: "Storefront", foot_orders: "Your orders", shop_empty: "Nothing here yet.", no_photo: "No photo yet", img_unavailable: "Image unavailable", order_label: "Order",
-      notes_title: "Fragrance notes", notes_top: "Top", notes_heart: "Heart", notes_base: "Base"
+      notes_title: "Fragrance notes", notes_top: "Top", notes_heart: "Heart", notes_base: "Base",
+      mq_1: "Erbil, Kurdistan", mq_2: "Considered, always", mq_3: "Made by hand", mq_4: "Rooted in the mountains"
     },
     ku: {
       tab_about:"دەربارە", tab_fragrance:"بۆن", tab_shop:"دوکان", tab_orders: "داواکارییەکان",
@@ -1706,7 +1830,8 @@
       pd_payment_t: "پارەدان", pd_payment: "پارەدان لە کاتی گەیاندن. پێویستت بە هەژمار یان کارت نییە.",
       pd_related: "لەوانەیە ئەمانەشت بەدڵ بێت", pd_not_found: "ئەم پارچەیە ئێستا بەردەست نییە.", pd_ask_msg: "سڵاو! حەزم لەمەیە",
       main_color_label: "سەرەکی", foot_storefront: "فرۆشگا", foot_orders: "داواکارییەکانت", shop_empty: "هێشتا هیچ شتێک لێرە نییە.", no_photo: "هێشتا وێنە نییە", img_unavailable: "وێنە بەردەست نییە", order_label: "داواکاری",
-      notes_title: "نۆتەکانی بۆن", notes_top: "سەرەوە", notes_heart: "دڵ", notes_base: "بنەڕەت"
+      notes_title: "نۆتەکانی بۆن", notes_top: "سەرەوە", notes_heart: "دڵ", notes_base: "بنەڕەت",
+      mq_1: "هەولێر، کوردستان", mq_2: "هەمیشە بە وردی", mq_3: "دەستکرد", mq_4: "ڕەگی لە چیاکاندایە"
     },
     ar: {
       tab_about:"من نحن", tab_fragrance:"العطور", tab_shop:"المتجر", tab_orders: "الطلبات",
@@ -1752,7 +1877,8 @@
       pd_payment_t: "الدفع", pd_payment: "الدفع عند الاستلام. لا حاجة لحساب أو بطاقة.",
       pd_related: "قد يعجبك أيضاً", pd_not_found: "هذه القطعة لم تعد متوفرة.", pd_ask_msg: "مرحباً! أنا مهتم بـ",
       main_color_label: "الأساسي", foot_storefront: "واجهة المتجر", foot_orders: "طلباتك", shop_empty: "لا شيء هنا بعد.", no_photo: "لا توجد صورة بعد", img_unavailable: "الصورة غير متوفرة", order_label: "الطلب",
-      notes_title: "مكونات العطر", notes_top: "النفحات العليا", notes_heart: "نفحات القلب", notes_base: "النفحات الأساسية"
+      notes_title: "مكونات العطر", notes_top: "النفحات العليا", notes_heart: "نفحات القلب", notes_base: "النفحات الأساسية",
+      mq_1: "أربيل، كردستان", mq_2: "بعناية، دائماً", mq_3: "صُنع يدوياً", mq_4: "جذورنا في الجبال"
     }
   };
 
