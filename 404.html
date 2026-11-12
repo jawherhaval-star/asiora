@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASIORA</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" sizes="64x64" href="/images/favicon-64.png">
+<script>
+  // Product links (/p/<id>/) for pieces added since the last preview
+  // refresh still open the product; anything else goes to the homepage.
+  (function(){
+    var m = location.pathname.match(/^\/p\/([^\/]+)\/?$/);
+    location.replace(m ? '/#product/' + m[1] : '/');
+  })();
+</script>
+<style>
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:#F3EEE5;color:#14161F;font-family:Georgia,'Times New Roman',serif}
+  a{color:#14161F}
+</style>
+</head>
+<body>
+<p><a href="/">ASIORA</a></p>
+</body>
+</html>

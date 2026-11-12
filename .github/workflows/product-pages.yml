@@ -1,0 +1,59 @@
+name: Product link previews
+
+# Rebuilds /p/<id>/ preview pages from the store's products so shared
+# product links show the right photo, name and price.
+on:
+  schedule:
+    - cron: '17 * * * *'   # hourly
+  workflow_dispatch:         # "Run workflow" button for an immediate refresh
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'scripts/build-product-pages.mjs'
+      - '.github/workflows/product-pages.yml'
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: product-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build product pages
+        run: node scripts/build-product-pages.mjs
+
+      - name: Commit changes
+        id: commit
+        run: |
+          if [ -n "$(git status --porcelain -- p)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A -- p
+            git commit -m "Update product link previews"
+            git pull --rebase origin main
+            git push origin HEAD:main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No product changes."
+          fi
+
+      - name: Publish site
+        if: steps.commit.outputs.changed == 'true'
+        run: |
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pages/builds" \
+            || echo "Could not request a Pages build; it will publish on the next push."

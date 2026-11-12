@@ -2342,7 +2342,11 @@
     const p = allProducts().find(x => x.id === id);
     return p && p.category === 'FRG' ? 'fragrance' : 'shop';
   }
-  function productUrl(p){ return location.origin + location.pathname + productHref(p); }
+  // Shareable link: /p/<id>/ carries a per-product link preview (built by the
+  // "Product link previews" GitHub Action) and forwards to #product/<id>.
+  function productUrl(p){
+    return new URL('p/' + encodeURIComponent(p.id) + '/', location.origin + location.pathname).href;
+  }
 
   function renderProductPage(){
     if(!productDetailEl || !currentProductId) return;
