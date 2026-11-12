@@ -1052,6 +1052,11 @@
     .story-media img{ transform:scale(1.04) !important; }
   }
 
+
+  /* ---------- Instagram link on product page ---------- */
+  .pd-instagram{ display:inline-flex;align-items:center;gap:8px; }
+  .pd-instagram svg{ width:14px;height:14px;flex-shrink:0;color:var(--gold); }
+
   :focus-visible{ outline:1px solid var(--text);outline-offset:4px; }
 
   /* ---------- responsive ---------- */
@@ -1442,6 +1447,7 @@
             <select id="p-category" required></select>
           </div>
           <div class="field"><label for="p-image">Image URL</label><input type="url" id="p-image" placeholder="https://..."></div>
+          <div class="field"><label for="p-instagram">Instagram post or Reel link (optional)</label><input type="url" id="p-instagram" placeholder="https://www.instagram.com/p/… or /reel/…"></div>
           <div class="img-preview" id="p-preview"><span>Image preview</span></div>
           <div class="field">
             <label>Color variants (optional)</label>
@@ -1802,7 +1808,7 @@
       label_name: "Full name", label_phone: "Your WhatsApp number", label_address: "Delivery address", label_city: "City", btn_send_wa: "Send order on WhatsApp",
       confirm_title: "Order sent", confirm_eyebrow: "Almost there", confirm_h3: "WhatsApp is open.", confirm_p1: "We've noted {num} piece(s) for {price}.", confirm_p2: "Send the message that opened in WhatsApp to confirm your order with us — that's where we'll sort out payment and delivery.", confirm_sign: "Thank you, genuinely.", btn_continue: "Continue shopping",
       stock_status: "in stock", low_stock: "Only {num} left", sold_out: "sold out", add_bag: "Add to bag",
-      pd_back: "Back", pd_color: "Colour", pd_share: "Share", pd_copied: "Link copied", pd_ask: "Ask about this piece",
+      pd_back: "Back", pd_color: "Colour", pd_share: "Share", pd_copied: "Link copied", pd_ask: "Ask about this piece", pd_instagram: "See it on Instagram",
       pd_delivery_t: "Delivery", pd_delivery: "Nationwide across Iraq — confirmed and arranged directly with you on WhatsApp.",
       pd_payment_t: "Payment", pd_payment: "Pay on delivery. No account or card needed.",
       pd_related: "You may also like", pd_not_found: "This piece is no longer available.", pd_ask_msg: "Hi! I'm interested in",
@@ -1849,7 +1855,7 @@
       label_name: "ناوی تەواو", label_phone: "ژمارەی واتسئەپی تۆ", label_address: "ناونیشانی گەیاندن", label_city: "شار", btn_send_wa: "ناردنی داواکاری لە واتسئەپ",
       confirm_title: "داواکاری نێردرا", confirm_eyebrow: "نزیک بوویتەوە", confirm_h3: "واتسئەپ کراوەیە.", confirm_p1: "تێبینیمان کردووە {num} پارچە بە نرخی {price}.", confirm_p2: "ئەو نامەیەی لە واتسئەپ کراوەتەوە بینێرە بۆ پشتڕاستکردنەوەی داواکارییەکەت لەگەڵمان.", confirm_sign: "زۆر سوپاس، بەڕاستی.", btn_continue: "بەردەوام بە لە کڕین",
       stock_status: "له کۆگا هەیە", low_stock: "تەنها {num} مایەوە", sold_out: "تەواو بوو", add_bag: "زیادکردن بۆ کنتۆر",
-      pd_back: "گەڕانەوە", pd_color: "ڕەنگ", pd_share: "هاوبەشکردن", pd_copied: "بەستەر کۆپی کرا", pd_ask: "پرسیار دەربارەی ئەم پارچەیە",
+      pd_back: "گەڕانەوە", pd_color: "ڕەنگ", pd_share: "هاوبەشکردن", pd_copied: "بەستەر کۆپی کرا", pd_ask: "پرسیار دەربارەی ئەم پارچەیە", pd_instagram: "لە ئینستاگرام ببینە",
       pd_delivery_t: "گەیاندن", pd_delivery: "بۆ هەموو عێراق — ڕاستەوخۆ لە ڕێگەی واتسئاپەوە لەگەڵت ڕێکدەخرێت.",
       pd_payment_t: "پارەدان", pd_payment: "پارەدان لە کاتی گەیاندن. پێویستت بە هەژمار یان کارت نییە.",
       pd_related: "لەوانەیە ئەمانەشت بەدڵ بێت", pd_not_found: "ئەم پارچەیە ئێستا بەردەست نییە.", pd_ask_msg: "سڵاو! حەزم لەمەیە",
@@ -1896,7 +1902,7 @@
       label_name: "الاسم الكامل", label_phone: "رقم الواتساب الخاص بك", label_address: "عنوان التوصيل", label_city: "المدينة", btn_send_wa: "إرسال الطلب عبر الواتساب",
       confirm_title: "تم إرسال الطلب", confirm_eyebrow: "لقد اقتربت", confirm_h3: "الواتساب مفتوح الآن.", confirm_p1: "لقد سجلنا عدد {num} قطعة بمبلغ {price}.", confirm_p2: "أرسل الرسالة التي فتحت في الواتساب لتأكيد طلبك معنا.", confirm_sign: "شكرًا لك، فعلاً.", btn_continue: "مواصلة التسوق",
       stock_status: "متوفر في المخزن", low_stock: "تبقّى {num} فقط", sold_out: "نفدت الكمية", add_bag: "أضف للحقيبة",
-      pd_back: "رجوع", pd_color: "اللون", pd_share: "مشاركة", pd_copied: "تم نسخ الرابط", pd_ask: "اسأل عن هذه القطعة",
+      pd_back: "رجوع", pd_color: "اللون", pd_share: "مشاركة", pd_copied: "تم نسخ الرابط", pd_ask: "اسأل عن هذه القطعة", pd_instagram: "شاهدها على إنستغرام",
       pd_delivery_t: "التوصيل", pd_delivery: "إلى جميع أنحاء العراق — نؤكّده ونرتّبه معك مباشرةً عبر واتساب.",
       pd_payment_t: "الدفع", pd_payment: "الدفع عند الاستلام. لا حاجة لحساب أو بطاقة.",
       pd_related: "قد يعجبك أيضاً", pd_not_found: "هذه القطعة لم تعد متوفرة.", pd_ask_msg: "مرحباً! أنا مهتم بـ",
@@ -2194,6 +2200,12 @@
   // Search matches the product in every language.
   function productText(p){
     return ['name','name_ku','name_ar','desc','desc_ku','desc_ar'].map(k => p[k] || '').join(' ').toLowerCase();
+  }
+  const INSTAGRAM_PROFILE = 'https://www.instagram.com/asiora.official';
+  // A product's own Instagram post/Reel if one was added in Admin, otherwise the profile.
+  function instagramFor(p){
+    const u = p && typeof p.instagram === 'string' ? p.instagram.trim() : '';
+    return /^https:\/\/(www\.)?instagram\.com\//i.test(u) ? u : INSTAGRAM_PROFILE;
   }
   function productHref(p){ return '#product/' + encodeURIComponent(p.id); }
 
@@ -2696,6 +2708,8 @@
           <div class="pd-actions">
             <a class="text-link" href="https://wa.me/9647501864144?text=${askText}" target="_blank" rel="noopener">${dict.pd_ask}</a>
             <button type="button" class="text-link pd-share" id="pdShareBtn">${dict.pd_share}</button>
+            <a class="text-link pd-instagram" href="${escapeAttr(instagramFor(p))}" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor"/></svg>${dict.pd_instagram}</a>
           </div>
           <dl class="pd-details">
             <div><dt>${dict.pd_delivery_t}</dt><dd>${dict.pd_delivery}</dd></div>
@@ -2913,6 +2927,7 @@
       document.getElementById('p-stock').value = p.stock || 0;
       document.getElementById('p-category').value = p.category || 'WMN';
       document.getElementById('p-image').value = p.image || '';
+      document.getElementById('p-instagram').value = p.instagram || '';
       document.getElementById('p-desc').value = p.desc || '';
       document.getElementById('p-desc-ku').value = p.desc_ku || '';
       document.getElementById('p-desc-ar').value = p.desc_ar || '';
@@ -2934,6 +2949,7 @@
         stock: parseInt(document.getElementById('p-stock').value, 10),
         category: document.getElementById('p-category').value,
         image: document.getElementById('p-image').value.trim(),
+        instagram: document.getElementById('p-instagram').value.trim(),
         desc: document.getElementById('p-desc').value.trim(),
         name_ku: document.getElementById('p-name-ku').value.trim(),
         name_ar: document.getElementById('p-name-ar').value.trim(),
@@ -2942,6 +2958,11 @@
         colors: getColorsFromForm(),
         notes: getNotesFromForm()
       };
+      if(data.instagram && !/^https:\/\/(www\.)?instagram\.com\//i.test(data.instagram)){
+        productFormMsg.textContent = 'The Instagram link should start with https://www.instagram.com/';
+        productFormMsg.classList.add('err');
+        return;
+      }
       if(!data.name || isNaN(data.price) || isNaN(data.stock)){
         productFormMsg.textContent = 'Fill in at least a name, price, and stock.';
         productFormMsg.classList.add('err');
