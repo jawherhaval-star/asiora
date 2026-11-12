@@ -894,6 +894,28 @@
     .pd-details > div{ grid-template-columns:1fr;gap:6px; }
   }
 
+
+  /* ---------- fragrance notes ---------- */
+  .notes-presets{ display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 10px;font-size:11px;color:var(--text-2); }
+  .notes-input{ display:grid;grid-template-columns:56px 1fr;align-items:baseline;gap:10px; }
+  .notes-input span{ font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-3); }
+  .notes-field input{ margin-bottom:8px; }
+  .card-notes{
+    font-family:var(--serif);font-style:italic;font-size:15px;color:var(--text-2);line-height:1.4;
+  }
+  .pd-notes{ margin:0 0 34px;max-width:460px; }
+  .pd-notes-row{ display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:baseline;padding:14px 0;border-top:1px solid var(--rule); }
+  .pd-notes-row:last-child{ border-bottom:1px solid var(--rule); }
+  .pd-notes-tier{ display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-2); }
+  .notes-icon{ width:20px;height:17px;flex-shrink:0;color:var(--gold);position:relative;top:2px; }
+  .pd-notes-list{ font-family:var(--serif);font-size:20px;line-height:1.4;color:var(--text); }
+  .pd-notes-list .dot{ color:var(--gold); }
+  html[dir="rtl"] .pd-notes-list{ font-size:17px; }
+  @media (max-width:520px){
+    .pd-notes-row{ grid-template-columns:84px 1fr;gap:12px; }
+    .pd-notes-list{ font-size:18px; }
+  }
+
   :focus-visible{ outline:1px solid var(--text);outline-offset:4px; }
 
   /* ---------- responsive ---------- */
@@ -1279,6 +1301,20 @@
             <button type="button" id="addColorRowBtn" class="listing-del" style="margin-top:6px;">+ Add color</button>
           </div>
           <div class="field"><label for="p-desc">Description</label><textarea id="p-desc"></textarea></div>
+          <div class="field notes-field">
+            <label for="p-notes-top">Fragrance notes (optional, comma-separated)</label>
+            <div class="notes-presets">
+              <span>Fill from poster:</span>
+              <button type="button" class="listing-del" data-notes-preset="white">White</button>
+              <button type="button" class="listing-del" data-notes-preset="black">Black</button>
+              <button type="button" class="listing-del" data-notes-preset="silver">Silver</button>
+              <button type="button" class="listing-del" data-notes-preset="pink">Pink</button>
+              <button type="button" class="listing-del" data-notes-preset="red">Red</button>
+            </div>
+            <div class="notes-input"><span>Top</span><input type="text" id="p-notes-top" placeholder="e.g. Bergamot, Pear, Pink Pepper"></div>
+            <div class="notes-input"><span>Heart</span><input type="text" id="p-notes-heart" placeholder="e.g. Jasmine, Orange Blossom, Rose"></div>
+            <div class="notes-input"><span>Base</span><input type="text" id="p-notes-base" placeholder="e.g. Vanilla, Amber, Sandalwood, Musk"></div>
+          </div>
           <button type="submit" class="submit-btn" id="productSaveBtn">Save piece</button>
           <button type="button" class="submit-btn" id="productCancelBtn" style="display:none;background:none;border:1px solid var(--line-strong);color:var(--bone-dim);margin-top:8px;">Cancel edit</button>
           <div class="form-msg" id="productFormMsg"></div>
@@ -1599,7 +1635,8 @@
       pd_delivery_t: "Delivery", pd_delivery: "Nationwide across Iraq — confirmed and arranged directly with you on WhatsApp.",
       pd_payment_t: "Payment", pd_payment: "Pay on delivery. No account or card needed.",
       pd_related: "You may also like", pd_not_found: "This piece is no longer available.", pd_ask_msg: "Hi! I'm interested in",
-      main_color_label: "Main", foot_storefront: "Storefront", foot_orders: "Your orders", shop_empty: "Nothing here yet.", no_photo: "No photo yet", img_unavailable: "Image unavailable", order_label: "Order"
+      main_color_label: "Main", foot_storefront: "Storefront", foot_orders: "Your orders", shop_empty: "Nothing here yet.", no_photo: "No photo yet", img_unavailable: "Image unavailable", order_label: "Order",
+      notes_title: "Fragrance notes", notes_top: "Top", notes_heart: "Heart", notes_base: "Base"
     },
     ku: {
       tab_about:"دەربارە", tab_fragrance:"بۆن", tab_shop:"دوکان", tab_orders: "داواکارییەکان",
@@ -1644,7 +1681,8 @@
       pd_delivery_t: "گەیاندن", pd_delivery: "بۆ هەموو عێراق — ڕاستەوخۆ لە ڕێگەی واتسئاپەوە لەگەڵت ڕێکدەخرێت.",
       pd_payment_t: "پارەدان", pd_payment: "پارەدان لە کاتی گەیاندن. پێویستت بە هەژمار یان کارت نییە.",
       pd_related: "لەوانەیە ئەمانەشت بەدڵ بێت", pd_not_found: "ئەم پارچەیە ئێستا بەردەست نییە.", pd_ask_msg: "سڵاو! حەزم لەمەیە",
-      main_color_label: "سەرەکی", foot_storefront: "فرۆشگا", foot_orders: "داواکارییەکانت", shop_empty: "هێشتا هیچ شتێک لێرە نییە.", no_photo: "هێشتا وێنە نییە", img_unavailable: "وێنە بەردەست نییە", order_label: "داواکاری"
+      main_color_label: "سەرەکی", foot_storefront: "فرۆشگا", foot_orders: "داواکارییەکانت", shop_empty: "هێشتا هیچ شتێک لێرە نییە.", no_photo: "هێشتا وێنە نییە", img_unavailable: "وێنە بەردەست نییە", order_label: "داواکاری",
+      notes_title: "نۆتەکانی بۆن", notes_top: "سەرەوە", notes_heart: "دڵ", notes_base: "بنەڕەت"
     },
     ar: {
       tab_about:"من نحن", tab_fragrance:"العطور", tab_shop:"المتجر", tab_orders: "الطلبات",
@@ -1689,7 +1727,8 @@
       pd_delivery_t: "التوصيل", pd_delivery: "إلى جميع أنحاء العراق — نؤكّده ونرتّبه معك مباشرةً عبر واتساب.",
       pd_payment_t: "الدفع", pd_payment: "الدفع عند الاستلام. لا حاجة لحساب أو بطاقة.",
       pd_related: "قد يعجبك أيضاً", pd_not_found: "هذه القطعة لم تعد متوفرة.", pd_ask_msg: "مرحباً! أنا مهتم بـ",
-      main_color_label: "الأساسي", foot_storefront: "واجهة المتجر", foot_orders: "طلباتك", shop_empty: "لا شيء هنا بعد.", no_photo: "لا توجد صورة بعد", img_unavailable: "الصورة غير متوفرة", order_label: "الطلب"
+      main_color_label: "الأساسي", foot_storefront: "واجهة المتجر", foot_orders: "طلباتك", shop_empty: "لا شيء هنا بعد.", no_photo: "لا توجد صورة بعد", img_unavailable: "الصورة غير متوفرة", order_label: "الطلب",
+      notes_title: "مكونات العطر", notes_top: "النفحات العليا", notes_heart: "نفحات القلب", notes_base: "النفحات الأساسية"
     }
   };
 
@@ -1921,6 +1960,51 @@
 
   let selectedColors = {}; // productId -> chosen color label, persists across re-renders
 
+  // Fragrance note names are stored in English; these show them in Kurdish
+  // and Arabic. Any note not listed here is shown exactly as typed.
+  const NOTE_I18N = {
+    ku: {
+      'Bergamot':'بێرگاموت','Pear':'هەرمێ','Pink Pepper':'بیبەری پەمەیی','Jasmine':'یاسەمەن','Orange Blossom':'گوڵی پرتەقاڵ',
+      'Rose':'گوڵ','Vanilla':'ڤانیلا','Amber':'عەنبەر','Sandalwood':'سەندەڵ','Musk':'میسک','Blood Orange':'پرتەقاڵی سوور',
+      'Black Pepper':'بیبەری ڕەش','Spices':'بەهارات','Lavender':'لاوەندەر','Woods':'دار','Moss':'قەوزە','Tonka Bean':'تۆنکا',
+      'Green Leaves':'گەڵای سەوز','Berry Blend':'تێکەڵەی توو','Aquatic Florals':'گوڵە ئاوییەکان','Cashmeran':'کاشمێران',
+      'Cedarwood':'داری سیدر','Mandarin':'لالەنگی','Peach':'قۆخ','Mountain Herbs':'گیای چیا','Mountain Resin':'بنێشتی چیا'
+    },
+    ar: {
+      'Bergamot':'برغموت','Pear':'إجاص','Pink Pepper':'فلفل وردي','Jasmine':'ياسمين','Orange Blossom':'زهر البرتقال',
+      'Rose':'ورد','Vanilla':'فانيليا','Amber':'عنبر','Sandalwood':'خشب الصندل','Musk':'مسك','Blood Orange':'برتقال أحمر',
+      'Black Pepper':'فلفل أسود','Spices':'توابل','Lavender':'خزامى','Woods':'أخشاب','Moss':'طحلب','Tonka Bean':'حبوب التونكا',
+      'Green Leaves':'أوراق خضراء','Berry Blend':'مزيج التوت','Aquatic Florals':'زهور مائية','Cashmeran':'كشميران',
+      'Cedarwood':'خشب الأرز','Mandarin':'يوسفي','Peach':'خوخ','Mountain Herbs':'أعشاب جبلية','Mountain Resin':'راتنج جبلي'
+    }
+  };
+  function noteLabel(n){ return (NOTE_I18N[currentLang] && NOTE_I18N[currentLang][n]) || n; }
+  function notesOf(p){
+    const n = p && p.notes;
+    if(!n) return null;
+    const tiers = ['top','heart','base'].map(k => ({ key:k, list: Array.isArray(n[k]) ? n[k].filter(Boolean) : [] }));
+    return tiers.some(t => t.list.length) ? tiers : null;
+  }
+  // Tiny mountain icon with the tier's band highlighted (top / heart / base).
+  function notesIcon(tier){
+    const bands = { top:'M12 3 L16 9 L8 9 Z', heart:'M8 9 L16 9 L19.3 14 L4.7 14 Z', base:'M4.7 14 L19.3 14 L22 18 L2 18 Z' };
+    return `<svg class="notes-icon" viewBox="0 0 24 20" aria-hidden="true"><path d="M12 3 L22 18 L2 18 Z" fill="none" stroke="currentColor" stroke-width="1"/><path d="${bands[tier]}" fill="currentColor"/></svg>`;
+  }
+  function buildNotesBlock(p){
+    const tiers = notesOf(p);
+    if(!tiers) return '';
+    const dict = T_DICT[currentLang];
+    return `
+      <div class="pd-notes">
+        <div class="pd-label">${dict.notes_title}</div>
+        ${tiers.filter(t => t.list.length).map(t => `
+          <div class="pd-notes-row">
+            <div class="pd-notes-tier">${notesIcon(t.key)}<span>${dict['notes_' + t.key]}</span></div>
+            <div class="pd-notes-list" dir="auto">${t.list.map(n => escapeHtml(noteLabel(n))).join('<span class="dot" aria-hidden="true"> · </span>')}</div>
+          </div>`).join('')}
+      </div>`;
+  }
+
   // The main "Image URL" is always the default option; extra colors are alternates alongside it.
   function effectiveColorsFor(p){
     const hasColors = Array.isArray(p.colors) && p.colors.length > 0;
@@ -1964,6 +2048,7 @@
             <span class="card-price">${fmtIQD(p.price)}</span>
             <span class="card-stock${isLow ? ' is-low' : ''}">${stockLabel}</span>
           </div>
+          ${notesOf(p) ? `<div class="card-notes" dir="auto">${notesOf(p).filter(t => t.list.length).map(t => escapeHtml(noteLabel(t.list[0]))).join(' · ')}</div>` : ''}
           ${p.desc ? `<div class="card-desc" dir="auto">${escapeHtml(p.desc)}</div>` : ''}
           <button class="add-cart-btn" data-id="${p.id}" data-color="${hasEffectiveColors ? escapeAttr(selectedLabel) : ''}" ${p.stock <= 0 ? 'disabled' : ''}>${btnLabel}</button>
         </div>
@@ -2394,6 +2479,7 @@
           <div class="pd-price">${fmtIQD(p.price)}</div>
           <div class="pd-stock${isLow ? ' is-low' : ''}${p.stock <= 0 ? ' is-out' : ''}">${stockLabel}</div>
           ${p.desc ? `<p class="pd-desc" dir="auto">${escapeHtml(p.desc)}</p>` : ''}
+          ${buildNotesBlock(p)}
           ${colors.length ? `
             <div class="pd-colors">
               <div class="pd-label">${dict.pd_color} — <span dir="auto">${escapeHtml(selectedLabel)}</span></div>
@@ -2564,6 +2650,41 @@
       if(ov && ov.style.display !== 'none') routeOrdersView(user);
     });
 
+    // Notes from the Kurdistan by ASIORA posters, one per bottle.
+    const NOTES_PRESETS = {
+      white:  { top:['Bergamot','Pear','Pink Pepper'], heart:['Jasmine','Orange Blossom','Rose'], base:['Vanilla','Amber','Sandalwood','Musk'],
+                desc:'Where elegance meets essence. A fragrance inspired by the mountains of Kurdistan.' },
+      black:  { top:['Blood Orange','Black Pepper','Spices'], heart:['Lavender','Orange Blossom'], base:['Woods','Moss','Amber','Tonka Bean'],
+                desc:'A scent inspired by strength, heritage and timeless beauty.' },
+      silver: { top:['Green Leaves','Berry Blend'], heart:['Aquatic Florals'], base:['Cashmeran','Musk','Cedarwood'] },
+      pink:   { top:['Mandarin','Peach'], heart:['Mountain Herbs','Rose'], base:['Cashmeran','Mountain Resin','Sandalwood'] },
+      red:    { top:['Green Leaves','Berry Blend'], heart:['Aquatic Florals'], base:['Cashmeran','Musk','Cedarwood'] }
+    };
+    const splitNotes = s => s.split(',').map(x => x.trim()).filter(Boolean);
+    function setNotesInForm(notes){
+      const n = notes || {};
+      document.getElementById('p-notes-top').value = (n.top || []).join(', ');
+      document.getElementById('p-notes-heart').value = (n.heart || []).join(', ');
+      document.getElementById('p-notes-base').value = (n.base || []).join(', ');
+    }
+    function getNotesFromForm(){
+      return {
+        top: splitNotes(document.getElementById('p-notes-top').value),
+        heart: splitNotes(document.getElementById('p-notes-heart').value),
+        base: splitNotes(document.getElementById('p-notes-base').value)
+      };
+    }
+    document.querySelectorAll('[data-notes-preset]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const preset = NOTES_PRESETS[btn.dataset.notesPreset];
+        if(!preset) return;
+        setNotesInForm(preset);
+        const descEl = document.getElementById('p-desc');
+        if(preset.desc && !descEl.value.trim()) descEl.value = preset.desc;
+        document.getElementById('p-category').value = 'FRG';
+      });
+    });
+
     function resetProductForm(){
       editingId = null;
       productForm.reset();
@@ -2574,6 +2695,7 @@
       imagePreview.innerHTML = `<span>Image preview</span>`;
       categorySelect.selectedIndex = 0;
       setColorsInForm([]);
+      setNotesInForm(null);
     }
     document.getElementById('productCancelBtn').addEventListener('click', resetProductForm);
 
@@ -2590,6 +2712,7 @@
       document.getElementById('p-desc').value = p.desc || '';
       imagePreview.innerHTML = p.image ? `<img src="${escapeAttr(p.image)}" onerror="this.parentElement.innerHTML='<span>Could not load image</span>'">` : `<span>Image preview</span>`;
       setColorsInForm(p.colors || []);
+      setNotesInForm(p.notes);
       document.getElementById('adminFormTitle').textContent = 'Edit piece';
       document.getElementById('productSaveBtn').textContent = 'Save changes';
       document.getElementById('productCancelBtn').style.display = 'block';
@@ -2606,7 +2729,8 @@
         category: document.getElementById('p-category').value,
         image: document.getElementById('p-image').value.trim(),
         desc: document.getElementById('p-desc').value.trim(),
-        colors: getColorsFromForm()
+        colors: getColorsFromForm(),
+        notes: getNotesFromForm()
       };
       if(!data.name || isNaN(data.price) || isNaN(data.stock)){
         productFormMsg.textContent = 'Fill in at least a name, price, and stock.';

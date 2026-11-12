@@ -49,7 +49,7 @@ async function fetchProducts() {
     const url = new URL(`https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/products`);
     url.searchParams.set('pageSize', '300');
     url.searchParams.set('key', API_KEY);
-    for (const f of ['name', 'price', 'stock', 'category', 'image', 'desc']) url.searchParams.append('mask.fieldPaths', f);
+    for (const f of ['name', 'price', 'stock', 'category', 'image', 'desc', 'notes']) url.searchParams.append('mask.fieldPaths', f);
     if (pageToken) url.searchParams.set('pageToken', pageToken);
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Firestore request failed: ${res.status} ${await res.text()}`);
@@ -83,6 +83,9 @@ function pageFor(p) {
   const descParts = [fmtIQD(p.price)];
   if (p.desc) descParts.push(p.desc);
   else if (category) descParts.push(`${category} by ASIORA, Erbil.`);
+  const notes = p.notes || {};
+  const tiers = ['top', 'heart', 'base'].map(k => (Array.isArray(notes[k]) ? notes[k].filter(Boolean) : [])).filter(t => t.length);
+  if (tiers.length) descParts.push('Notes: ' + tiers.map(t => t.join(', ')).join(' / '));
   const description = descParts.join(' · ');
   const image = absoluteImage(p.image);
 
