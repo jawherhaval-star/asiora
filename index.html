@@ -825,6 +825,75 @@
     .logo-text{ font-size:18px !important;letter-spacing:0.28em !important; }
   }
 
+
+  /* ---------- product detail page ---------- */
+  .card-img{ cursor:pointer; }
+  .card-img img{ cursor:pointer; }
+  .card-body h4 a{ transition:color .25s ease; }
+  .card-body h4 a:hover{ color:var(--accent); }
+  #product-view{ padding-top:40px; }
+  .pd-back{
+    display:inline-flex;align-items:center;gap:10px;margin-bottom:36px;
+    font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-2);
+    transition:color .25s ease;
+  }
+  .pd-back:hover{ color:var(--text); }
+  html[dir="rtl"] .pd-back span{ display:inline-block;transform:scaleX(-1); }
+  .pd-grid{ display:grid;grid-template-columns:1.15fr 0.85fr;gap:clamp(40px,6vw,96px);align-items:start; }
+  .pd-main{
+    aspect-ratio:4/5;background:var(--paper-2);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .pd-main img{ width:100%;height:100%;object-fit:cover;cursor:zoom-in;animation:pdImgIn .7s var(--ease-out) both; }
+  @keyframes pdImgIn{ from{ opacity:0; } to{ opacity:1; } }
+  .pd-main .ph{ font-family:var(--serif);font-style:italic;font-size:18px;color:var(--text-3); }
+  .pd-info{ position:sticky;top:120px;padding-top:8px; }
+  .pd-name{
+    font-family:var(--serif);font-weight:300;font-size:clamp(38px,4.4vw,60px);
+    line-height:1.02;letter-spacing:-0.01em;margin-bottom:22px;
+  }
+  .pd-price{ font-family:var(--serif);font-size:28px;margin-bottom:8px;font-variant-numeric:tabular-nums; }
+  .pd-stock{ font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-3);margin-bottom:28px; }
+  .pd-stock.is-low{ color:var(--danger); }
+  .pd-desc{ font-size:15.5px;line-height:1.85;color:var(--text-2);font-weight:300;max-width:440px;margin-bottom:32px; }
+  .pd-colors{ margin-bottom:32px; }
+  .pd-label{ font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-2);margin-bottom:14px; }
+  .pd-label span{ color:var(--text); }
+  .pd-swatches{ display:flex;gap:10px;flex-wrap:wrap; }
+  .pd-swatch{
+    width:52px;height:64px;padding:3px;background:var(--paper);
+    border:1px solid var(--rule-strong);transition:border-color .25s ease;
+  }
+  .pd-swatch img{ width:100%;height:100%;object-fit:cover;display:block; }
+  .pd-swatch:hover{ border-color:var(--text-2); }
+  .pd-swatch.active{ border-color:var(--gold); box-shadow:inset 0 0 0 1px var(--gold); }
+  .pd-add{ width:100%; }
+  .pd-add:disabled{ opacity:.4;cursor:not-allowed; }
+  .pd-add:disabled:hover{ background:var(--text);color:var(--paper); }
+  .pd-add.added{ background:var(--ok);border-color:var(--ok);color:var(--paper); }
+  .pd-actions{ display:flex;gap:28px;flex-wrap:wrap;align-items:center;margin:26px 0 40px; }
+  .pd-share{ background:none;border:none;border-bottom:1px solid var(--rule-strong);font-family:var(--sans); }
+  .pd-details{ border-top:1px solid var(--rule); }
+  .pd-details > div{ padding:20px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:120px 1fr;gap:16px; }
+  .pd-details dt{ font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-2);padding-top:3px; }
+  .pd-details dd{ font-size:14px;line-height:1.7;color:var(--text-2);font-weight:300; }
+  .pd-name[dir="auto"], .pd-desc[dir="auto"]{ unicode-bidi:plaintext; }
+  html[dir="rtl"] .pd-name[dir="auto"], html[dir="rtl"] .pd-desc[dir="auto"]{ text-align:right; }
+  html[dir="rtl"] .pd-price{ direction:ltr;text-align:right; }
+  .pd-related{ margin-top:140px; }
+  .pd-related .page-head h2{ font-family:var(--serif);font-weight:300;font-size:clamp(30px,3.6vw,46px);line-height:1.05; }
+  @media (max-width:900px){
+    #product-view{ padding-top:24px; }
+    .pd-grid{ grid-template-columns:1fr;gap:36px; }
+    .pd-info{ position:static; }
+    .pd-related{ margin-top:96px; }
+  }
+  @media (max-width:520px){
+    .pd-back{ margin-bottom:22px; }
+    .pd-main{ margin:0 -16px; }
+    .pd-details > div{ grid-template-columns:1fr;gap:6px; }
+  }
+
   :focus-visible{ outline:1px solid var(--text);outline-offset:4px; }
 
   /* ---------- responsive ---------- */
@@ -1117,6 +1186,11 @@
     <div class="grid" id="productGrid">
       <div class="loading" data-t="loading_pieces">Loading pieces…</div>
     </div>
+  </section>
+
+  <!-- ============ PRODUCT DETAIL ============ -->
+  <section id="product-view" style="display:none;">
+    <div id="productDetail"><div class="loading" data-t="loading">Loading…</div></div>
   </section>
 
   <!-- ============ ORDERS / ACCOUNT ============ -->
@@ -1515,7 +1589,11 @@
       checkout_title: "Order details", checkout_note: "No payment happens here — you'll send this order straight to us on WhatsApp to confirm and arrange payment.",
       label_name: "Full name", label_phone: "Your WhatsApp number", label_address: "Delivery address", label_city: "City", btn_send_wa: "Send order on WhatsApp",
       confirm_title: "Order sent", confirm_eyebrow: "Almost there", confirm_h3: "WhatsApp is open.", confirm_p1: "We've noted {num} piece(s) for {price}.", confirm_p2: "Send the message that opened in WhatsApp to confirm your order with us — that's where we'll sort out payment and delivery.", confirm_sign: "Thank you, genuinely.", btn_continue: "Continue shopping",
-      stock_status: "in stock", low_stock: "Only {num} left", sold_out: "sold out", add_bag: "Add to bag"
+      stock_status: "in stock", low_stock: "Only {num} left", sold_out: "sold out", add_bag: "Add to bag",
+      pd_back: "Back", pd_color: "Colour", pd_share: "Share", pd_copied: "Link copied", pd_ask: "Ask about this piece",
+      pd_delivery_t: "Delivery", pd_delivery: "Nationwide across Iraq — confirmed and arranged directly with you on WhatsApp.",
+      pd_payment_t: "Payment", pd_payment: "Pay on delivery. No account or card needed.",
+      pd_related: "You may also like", pd_not_found: "This piece is no longer available.", pd_ask_msg: "Hi! I'm interested in"
     },
     ku: {
       tab_about:"دەربارە", tab_fragrance:"بۆن", tab_shop:"دوکان", tab_orders: "داواکارییەکان",
@@ -1555,7 +1633,11 @@
       checkout_title: "زانیارییەکانی داواکاری", checkout_note: "هیچ پارەدانێک لێرە ڕوونادات — ئەم داواکارییە ڕاستەوخۆ لە واتسئەپ بۆ ئێمە دەنێریت بۆ پشتڕاستکردنەوە و ڕێکخستنی پارەدان.",
       label_name: "ناوی تەواو", label_phone: "ژمارەی واتسئەپی تۆ", label_address: "ناونیشانی گەیاندن", label_city: "شار", btn_send_wa: "ناردنی داواکاری لە واتسئەپ",
       confirm_title: "داواکاری نێردرا", confirm_eyebrow: "نزیک بوویتەوە", confirm_h3: "واتسئەپ کراوەیە.", confirm_p1: "تێبینیمان کردووە {num} پارچە بە نرخی {price}.", confirm_p2: "ئەو نامەیەی لە واتسئەپ کراوەتەوە بینێرە بۆ پشتڕاستکردنەوەی داواکارییەکەت لەگەڵمان.", confirm_sign: "زۆر سوپاس، بەڕاستی.", btn_continue: "بەردەوام بە لە کڕین",
-      stock_status: "له کۆگا هەیە", low_stock: "تەنها {num} مایەوە", sold_out: "تەواو بوو", add_bag: "زیادکردن بۆ کنتۆر"
+      stock_status: "له کۆگا هەیە", low_stock: "تەنها {num} مایەوە", sold_out: "تەواو بوو", add_bag: "زیادکردن بۆ کنتۆر",
+      pd_back: "گەڕانەوە", pd_color: "ڕەنگ", pd_share: "هاوبەشکردن", pd_copied: "بەستەر کۆپی کرا", pd_ask: "پرسیار دەربارەی ئەم پارچەیە",
+      pd_delivery_t: "گەیاندن", pd_delivery: "بۆ هەموو عێراق — ڕاستەوخۆ لە ڕێگەی واتسئاپەوە لەگەڵت ڕێکدەخرێت.",
+      pd_payment_t: "پارەدان", pd_payment: "پارەدان لە کاتی گەیاندن. پێویستت بە هەژمار یان کارت نییە.",
+      pd_related: "لەوانەیە ئەمانەشت بەدڵ بێت", pd_not_found: "ئەم پارچەیە ئێستا بەردەست نییە.", pd_ask_msg: "سڵاو! حەزم لەمەیە"
     },
     ar: {
       tab_about:"من نحن", tab_fragrance:"العطور", tab_shop:"المتجر", tab_orders: "الطلبات",
@@ -1595,7 +1677,11 @@
       checkout_title: "تفاصيل الطلب", checkout_note: "لا توجد عملية دفع هنا — سترسل هذا الطلب مباشرة إلينا على الواتساب لتأكيده وترتيب عملية الدفع.",
       label_name: "الاسم الكامل", label_phone: "رقم الواتساب الخاص بك", label_address: "عنوان التوصيل", label_city: "المدينة", btn_send_wa: "إرسال الطلب عبر الواتساب",
       confirm_title: "تم إرسال الطلب", confirm_eyebrow: "لقد اقتربت", confirm_h3: "الواتساب مفتوح الآن.", confirm_p1: "لقد سجلنا عدد {num} قطعة بمبلغ {price}.", confirm_p2: "أرسل الرسالة التي فتحت في الواتساب لتأكيد طلبك معنا.", confirm_sign: "شكرًا لك، فعلاً.", btn_continue: "مواصلة التسوق",
-      stock_status: "متوفر في المخزن", low_stock: "تبقّى {num} فقط", sold_out: "نفدت الكمية", add_bag: "أضف للحقيبة"
+      stock_status: "متوفر في المخزن", low_stock: "تبقّى {num} فقط", sold_out: "نفدت الكمية", add_bag: "أضف للحقيبة",
+      pd_back: "رجوع", pd_color: "اللون", pd_share: "مشاركة", pd_copied: "تم نسخ الرابط", pd_ask: "اسأل عن هذه القطعة",
+      pd_delivery_t: "التوصيل", pd_delivery: "إلى جميع أنحاء العراق — نؤكّده ونرتّبه معك مباشرةً عبر واتساب.",
+      pd_payment_t: "الدفع", pd_payment: "الدفع عند الاستلام. لا حاجة لحساب أو بطاقة.",
+      pd_related: "قد يعجبك أيضاً", pd_not_found: "هذه القطعة لم تعد متوفرة.", pd_ask_msg: "مرحباً! أنا مهتم بـ"
     }
   };
 
@@ -1662,6 +1748,7 @@
 
     renderShop();
     renderCart();
+    if(typeof productViewVisible === 'function' && productViewVisible()) renderProductPage();
     const ordersView = document.getElementById('orders-view');
     if(ordersView && ordersView.style.display !== 'none') routeOrdersView(auth.currentUser);
 
@@ -1751,6 +1838,7 @@
       if(fragGrid && fragGrid.querySelector('.loading')) fragGrid.innerHTML = '';
       renderShop();
       renderAdminListings();
+      if(productViewVisible()) renderProductPage();
     }, err => {
       console.error('Products listener error', err);
       if(grid) grid.innerHTML = `<div class="empty-state"><p>Hmm, the pieces didn't load. Check your connection and try again.</p></div>`;
@@ -1825,19 +1913,23 @@
 
   let selectedColors = {}; // productId -> chosen color label, persists across re-renders
 
+  // The main "Image URL" is always the default option; extra colors are alternates alongside it.
+  function effectiveColorsFor(p){
+    const hasColors = Array.isArray(p.colors) && p.colors.length > 0;
+    if(!hasColors) return [];
+    return (p.image && !p.colors.some(c => c.image === p.image))
+      ? [{ label: T_DICT[currentLang].main_color_label || 'Main', image: p.image }, ...p.colors]
+      : p.colors;
+  }
+  function productHref(p){ return '#product/' + encodeURIComponent(p.id); }
+
   function buildProductCard(p, i){
     const isLow = p.stock > 0 && p.stock <= 3;
     const stockLabel = p.stock > 0
       ? (isLow ? T_DICT[currentLang].low_stock.replace('{num}', p.stock) : `${p.stock} ${T_DICT[currentLang].stock_status}`)
       : T_DICT[currentLang].sold_out;
     const btnLabel = p.stock <= 0 ? T_DICT[currentLang].sold_out : T_DICT[currentLang].add_bag;
-    const hasColors = Array.isArray(p.colors) && p.colors.length > 0;
-    // The main "Image URL" is always the default option; extra colors are alternates alongside it.
-    const effectiveColors = hasColors
-      ? (p.image && !p.colors.some(c => c.image === p.image)
-          ? [{ label: T_DICT[currentLang].main_color_label || 'Main', image: p.image }, ...p.colors]
-          : p.colors)
-      : [];
+    const effectiveColors = effectiveColorsFor(p);
     const hasEffectiveColors = effectiveColors.length > 0;
     const selectedLabel = hasEffectiveColors ? (selectedColors[p.id] && effectiveColors.some(c => c.label === selectedColors[p.id]) ? selectedColors[p.id] : effectiveColors[0].label) : null;
     const selectedColorObj = hasEffectiveColors ? effectiveColors.find(c => c.label === selectedLabel) : null;
@@ -1853,13 +1945,13 @@
       <div class="card-swatch-label" dir="auto">${escapeHtml(selectedLabel)}</div>` : '';
     return `
       <div class="card" style="animation-delay:${Math.min(i,8) * 60}ms">
-        <div class="card-img${mainImage ? ' is-loading' : ''}">
+        <a class="card-img${mainImage ? ' is-loading' : ''}" href="${productHref(p)}" aria-label="${escapeAttr(p.name)}">
           <span class="card-code">${p.category}</span>
           ${mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(p.name)}" loading="lazy" onload="this.classList.add('loaded');this.closest('.card-img').classList.remove('is-loading')" onerror="this.closest('.card-img').classList.remove('is-loading');this.parentElement.innerHTML+='<span class=&quot;ph&quot;>Image unavailable</span>'">` : `<span class="ph">No photo yet</span>`}
-        </div>
+        </a>
         ${swatches}
         <div class="card-body">
-          <h4 dir="auto">${escapeHtml(p.name)}</h4>
+          <h4 dir="auto"><a href="${productHref(p)}">${escapeHtml(p.name)}</a></h4>
           <div class="card-meta">
             <span class="card-price">${fmtIQD(p.price)}</span>
             <span class="card-stock${isLow ? ' is-low' : ''}">${stockLabel}</span>
@@ -2232,7 +2324,126 @@
   if(cartCloseEl) cartCloseEl.addEventListener('click', closeCart);
   if(cartOverlay) cartOverlay.addEventListener('click', closeCart);
 
-  // ---- photo lightbox (click any product photo to enlarge) ----
+  // ================= PRODUCT DETAIL PAGE =================
+  let currentProductId = null;
+  const SITE_TITLE = document.title;
+  const productDetailEl = document.getElementById('productDetail');
+  // True while the URL points at a product (the panel may still be mid-transition).
+  function productViewVisible(){ return /^#product\//.test(window.location.hash); }
+  function productTabFor(id){
+    const p = allProducts().find(x => x.id === id);
+    return p && p.category === 'FRG' ? 'fragrance' : 'shop';
+  }
+  function productUrl(p){ return location.origin + location.pathname + productHref(p); }
+
+  function renderProductPage(){
+    if(!productDetailEl || !currentProductId) return;
+    const dict = T_DICT[currentLang];
+    const p = allProducts().find(x => x.id === currentProductId);
+    const backTab = p && p.category === 'FRG' ? 'fragrance' : 'shop';
+    const backLabel = backTab === 'fragrance' ? dict.frag_index_title : dict.index_title;
+    const back = `<a class="pd-back" href="#${backTab}" data-back="${backTab}"><span aria-hidden="true">←</span> ${escapeHtml(backLabel)}</a>`;
+    if(!p){
+      productDetailEl.innerHTML = products.length
+        ? `${back}<div class="empty-state"><p dir="auto">${dict.pd_not_found}</p></div>`
+        : `<div class="loading">${dict.loading || 'Loading…'}</div>`;
+      document.title = SITE_TITLE;
+      return;
+    }
+    document.title = `${p.name} — ASIORA`;
+    const colors = effectiveColorsFor(p);
+    const selectedLabel = colors.length
+      ? (colors.some(c => c.label === selectedColors[p.id]) ? selectedColors[p.id] : colors[0].label)
+      : '';
+    const selected = colors.find(c => c.label === selectedLabel);
+    const mainImage = selected ? selected.image : p.image;
+    const isLow = p.stock > 0 && p.stock <= 3;
+    const stockLabel = p.stock > 0
+      ? (isLow ? dict.low_stock.replace('{num}', p.stock) : `${p.stock} ${dict.stock_status}`)
+      : dict.sold_out;
+    const catLabel = typeof CAT_LABELS[p.category] === 'function' ? CAT_LABELS[p.category]() : p.category;
+    const askText = encodeURIComponent(`${dict.pd_ask_msg}: ${p.name}${selectedLabel ? ' (' + selectedLabel + ')' : ''} — ${productUrl(p)}`);
+    const related = allProducts()
+      .filter(x => x.id !== p.id && x.category === p.category)
+      .concat(allProducts().filter(x => x.id !== p.id && x.category !== p.category && (x.category === 'FRG') === (p.category === 'FRG')))
+      .slice(0, 4);
+
+    productDetailEl.innerHTML = `
+      ${back}
+      <div class="pd-grid">
+        <div class="pd-gallery">
+          <div class="pd-main">
+            ${mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(p.name)}${selectedLabel ? ' — ' + escapeAttr(selectedLabel) : ''}">` : `<span class="ph">No photo yet</span>`}
+          </div>
+        </div>
+        <div class="pd-info">
+          <div class="eyebrow">${escapeHtml(catLabel)}</div>
+          <h1 class="pd-name" dir="auto">${escapeHtml(p.name)}</h1>
+          <div class="pd-price">${fmtIQD(p.price)}</div>
+          <div class="pd-stock${isLow ? ' is-low' : ''}${p.stock <= 0 ? ' is-out' : ''}">${stockLabel}</div>
+          ${p.desc ? `<p class="pd-desc" dir="auto">${escapeHtml(p.desc)}</p>` : ''}
+          ${colors.length ? `
+            <div class="pd-colors">
+              <div class="pd-label">${dict.pd_color} — <span dir="auto">${escapeHtml(selectedLabel)}</span></div>
+              <div class="pd-swatches">
+                ${colors.map(c => `
+                  <button type="button" class="pd-swatch${c.label === selectedLabel ? ' active' : ''}" data-label="${escapeAttr(c.label)}" title="${escapeAttr(c.label)}" aria-label="${escapeAttr(c.label)}" aria-pressed="${c.label === selectedLabel}">
+                    <img src="${escapeAttr(c.image)}" alt="" loading="lazy">
+                  </button>`).join('')}
+              </div>
+            </div>` : ''}
+          <button class="btn-lux pd-add" id="pdAddBtn" data-id="${escapeAttr(p.id)}" data-color="${escapeAttr(selectedLabel)}" ${p.stock <= 0 ? 'disabled' : ''}>${p.stock <= 0 ? dict.sold_out : dict.add_bag}</button>
+          <div class="pd-actions">
+            <a class="text-link" href="https://wa.me/9647501864144?text=${askText}" target="_blank" rel="noopener">${dict.pd_ask}</a>
+            <button type="button" class="text-link pd-share" id="pdShareBtn">${dict.pd_share}</button>
+          </div>
+          <dl class="pd-details">
+            <div><dt>${dict.pd_delivery_t}</dt><dd>${dict.pd_delivery}</dd></div>
+            <div><dt>${dict.pd_payment_t}</dt><dd>${dict.pd_payment}</dd></div>
+          </dl>
+        </div>
+      </div>
+      ${related.length ? `
+        <section class="pd-related">
+          <div class="page-head"><div><div class="eyebrow">ASIORA</div><h2>${dict.pd_related}</h2></div></div>
+          <div class="grid">${related.map((r, i) => buildProductCard(r, i)).join('')}</div>
+        </section>` : ''}
+    `;
+
+    productDetailEl.querySelectorAll('.pd-swatch').forEach(btn => {
+      btn.addEventListener('click', () => { selectedColors[p.id] = btn.dataset.label; renderProductPage(); });
+    });
+    const addBtn = document.getElementById('pdAddBtn');
+    if(addBtn) addBtn.addEventListener('click', () => addToCart(p.id, addBtn));
+    const shareBtn = document.getElementById('pdShareBtn');
+    if(shareBtn) shareBtn.addEventListener('click', async () => {
+      const url = productUrl(p);
+      try{
+        if(navigator.share){ await navigator.share({ title: `${p.name} — ASIORA`, url }); return; }
+        await navigator.clipboard.writeText(url);
+      }catch(e){
+        if(e && e.name === 'AbortError') return;
+        try{ window.prompt('', url); }catch(_){}
+        return;
+      }
+      shareBtn.textContent = dict.pd_copied;
+      setTimeout(() => { shareBtn.textContent = dict.pd_share; }, 1600);
+    });
+    const backEl = productDetailEl.querySelector('.pd-back');
+    if(backEl) backEl.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tab = backEl.dataset.back;
+      location.hash = tab;
+      setTimeout(() => {
+        const target = document.getElementById(tab === 'fragrance' ? 'fragranceGrid' : 'productGrid');
+        if(target) target.scrollIntoView({ block:'start' });
+      }, 260);
+    });
+    const relatedEl = productDetailEl.querySelector('.pd-related');
+    if(relatedEl){ wireAddToBagButtons(relatedEl); wireColorSwatches(relatedEl); }
+  }
+
+  // ---- photo lightbox (click the product-page photo to enlarge) ----
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxClose = document.getElementById('lightboxClose');
@@ -2249,7 +2460,7 @@
     document.body.style.overflow = '';
   }
   document.addEventListener('click', (e) => {
-    const img = e.target.closest('.card-img img');
+    const img = e.target.closest('.pd-main img');
     if(img){ openLightbox(img.src, img.alt); return; }
   });
   if(lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
@@ -2515,13 +2726,15 @@
 
     function showTab(tab){
       document.querySelectorAll('#tabsRow .tab-btn[data-subtab]').forEach(b=>b.classList.remove('active'));
-      const activeBtn = document.querySelector(`#tabsRow .tab-btn[data-subtab="${tab === 'admin' ? 'shop' : tab}"]`);
+      const navTab = tab === 'admin' ? 'shop' : (tab === 'product' ? productTabFor(currentProductId) : tab);
+      const activeBtn = document.querySelector(`#tabsRow .tab-btn[data-subtab="${navTab}"]`);
+      if(tab !== 'product') document.title = SITE_TITLE;
       activeBtn?.classList.add('active');
       activeBtn?.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
       moveTabIndicator(activeBtn);
 
-      const panelIds = ['about-view','fragrance-view','shop-view','orders-view','admin-view'];
-      const targetMap = { about:'about-view', fragrance:'fragrance-view', shop:'shop-view', orders:'orders-view', admin:'admin-view' };
+      const panelIds = ['about-view','fragrance-view','shop-view','product-view','orders-view','admin-view'];
+      const targetMap = { about:'about-view', fragrance:'fragrance-view', shop:'shop-view', product:'product-view', orders:'orders-view', admin:'admin-view' };
       const targetId = targetMap[tab] || 'shop-view';
       const targetEl = document.getElementById(targetId);
       const currentEl = panelIds.map(id=>document.getElementById(id)).find(el=> el && el.style.display !== 'none');
@@ -2548,7 +2761,16 @@
     }
     window.ASIORA_showTab = showTab;
 
+    function showProduct(id){
+      currentProductId = id;
+      renderProductPage();
+      showTab('product');
+      window.scrollTo(0, 0);
+    }
+
     function checkHashRoute(){
+      const productMatch = window.location.hash.match(/^#product\/(.+)$/);
+      if(productMatch){ showProduct(decodeURIComponent(productMatch[1])); return; }
       if(window.location.hash === '#admin') showTab('admin');
       else if(window.location.hash === '#orders') showTab('orders');
       else if(window.location.hash === '#about') showTab('about');
@@ -2566,11 +2788,16 @@
 
     // Always land on the About tab on initial load/refresh, regardless of
     // whatever hash is already in the URL (bookmark, browser autofill, etc.)
-    if(window.location.hash !== '#about'){
-      window.location.hash = 'about';
+    // Exception: shared product links (#product/<id>) open that product.
+    if(/^#product\//.test(window.location.hash)){
+      checkHashRoute();
+    } else {
+      if(window.location.hash !== '#about'){
+        window.location.hash = 'about';
+      }
+      showTab('about');
+      window.scrollTo(0, 0);
     }
-    showTab('about');
-    window.scrollTo(0, 0);
 
     document.querySelectorAll('#tabsRow .tab-btn[data-subtab]').forEach(btn=>{
       btn.addEventListener('click', (e)=>{
