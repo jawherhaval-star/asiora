@@ -1304,6 +1304,10 @@
           <input type="hidden" id="p-id">
           <div class="field"><label for="p-name">Name</label><input type="text" id="p-name" required></div>
           <div class="field-row">
+            <div class="field"><label for="p-name-ku">Name — Kurdish (optional)</label><input type="text" id="p-name-ku" dir="rtl" lang="ku"></div>
+            <div class="field"><label for="p-name-ar">Name — Arabic (optional)</label><input type="text" id="p-name-ar" dir="rtl" lang="ar"></div>
+          </div>
+          <div class="field-row">
             <div class="field"><label for="p-price">Price (IQD)</label><input type="number" id="p-price" min="0" step="250" required></div>
             <div class="field"><label for="p-stock">Stock</label><input type="number" id="p-stock" min="0" step="1" required></div>
           </div>
@@ -1319,6 +1323,8 @@
             <button type="button" id="addColorRowBtn" class="listing-del" style="margin-top:6px;">+ Add color</button>
           </div>
           <div class="field"><label for="p-desc">Description</label><textarea id="p-desc"></textarea></div>
+          <div class="field"><label for="p-desc-ku">Description — Kurdish (optional)</label><textarea id="p-desc-ku" dir="rtl" lang="ku"></textarea></div>
+          <div class="field"><label for="p-desc-ar">Description — Arabic (optional)</label><textarea id="p-desc-ar" dir="rtl" lang="ar"></textarea></div>
           <div class="field notes-field">
             <label for="p-notes-top">Fragrance notes (optional, comma-separated)</label>
             <div class="notes-presets">
@@ -2031,6 +2037,14 @@
       ? [{ label: T_DICT[currentLang].main_color_label || 'Main', image: p.image }, ...p.colors]
       : p.colors;
   }
+  // Product name/description in the selected language, falling back to the
+  // main (English) text when no translation was entered in Admin.
+  function pName(p){ return (p && (currentLang !== 'en' && p['name_' + currentLang])) || (p && p.name) || ''; }
+  function pDesc(p){ return (p && (currentLang !== 'en' && p['desc_' + currentLang])) || (p && p.desc) || ''; }
+  // Search matches the product in every language.
+  function productText(p){
+    return ['name','name_ku','name_ar','desc','desc_ku','desc_ar'].map(k => p[k] || '').join(' ').toLowerCase();
+  }
   function productHref(p){ return '#product/' + encodeURIComponent(p.id); }
 
   function buildProductCard(p, i){
@@ -2055,19 +2069,19 @@
       <div class="card-swatch-label" dir="auto">${escapeHtml(selectedLabel)}</div>` : '';
     return `
       <div class="card" style="animation-delay:${Math.min(i,8) * 60}ms">
-        <a class="card-img${mainImage ? ' is-loading' : ''}" href="${productHref(p)}" aria-label="${escapeAttr(p.name)}">
+        <a class="card-img${mainImage ? ' is-loading' : ''}" href="${productHref(p)}" aria-label="${escapeAttr(pName(p))}">
           <span class="card-code">${p.category}</span>
-          ${mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(p.name)}" loading="lazy" onload="this.classList.add('loaded');this.closest('.card-img').classList.remove('is-loading')" onerror="this.closest('.card-img').classList.remove('is-loading');this.parentElement.innerHTML+='<span class=&quot;ph&quot;>${T_DICT[currentLang].img_unavailable}</span>'">` : `<span class="ph">${T_DICT[currentLang].no_photo}</span>`}
+          ${mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(pName(p))}" loading="lazy" onload="this.classList.add('loaded');this.closest('.card-img').classList.remove('is-loading')" onerror="this.closest('.card-img').classList.remove('is-loading');this.parentElement.innerHTML+='<span class=&quot;ph&quot;>${T_DICT[currentLang].img_unavailable}</span>'">` : `<span class="ph">${T_DICT[currentLang].no_photo}</span>`}
         </a>
         ${swatches}
         <div class="card-body">
-          <h4 dir="auto"><a href="${productHref(p)}">${escapeHtml(p.name)}</a></h4>
+          <h4 dir="auto"><a href="${productHref(p)}">${escapeHtml(pName(p))}</a></h4>
           <div class="card-meta">
             <span class="card-price">${fmtIQD(p.price)}</span>
             <span class="card-stock${isLow ? ' is-low' : ''}">${stockLabel}</span>
           </div>
           ${notesOf(p) ? `<div class="card-notes" dir="auto">${notesOf(p).filter(t => t.list.length).map(t => escapeHtml(noteLabel(t.list[0]))).join(' · ')}</div>` : ''}
-          ${p.desc ? `<div class="card-desc" dir="auto">${escapeHtml(p.desc)}</div>` : ''}
+          ${pDesc(p) ? `<div class="card-desc" dir="auto">${escapeHtml(pDesc(p))}</div>` : ''}
           <button class="add-cart-btn" data-id="${p.id}" data-color="${hasEffectiveColors ? escapeAttr(selectedLabel) : ''}" ${p.stock <= 0 ? 'disabled' : ''}>${btnLabel}</button>
         </div>
       </div>
@@ -2116,7 +2130,7 @@
       const items = allProducts().filter(p => {
         if(p.category === 'FRG') return false; // fragrance lives on its own page
         const matchesCat = activeFilter === 'ALL' || p.category === activeFilter;
-        const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery) || (p.desc && p.desc.toLowerCase().includes(searchQuery));
+        const matchesSearch = !searchQuery || productText(p).includes(searchQuery);
         return matchesCat && matchesSearch;
       });
       const applyContent = () => {
@@ -2136,7 +2150,7 @@
       else { grid.classList.add('swapping'); setTimeout(() => { if(token === shopRenderToken) applyContent(); }, 160); }
     }
     if(fragGrid){
-      const fragItems = allProducts().filter(p => p.category === 'FRG' && (!searchQuery || p.name.toLowerCase().includes(searchQuery) || (p.desc && p.desc.toLowerCase().includes(searchQuery))));
+      const fragItems = allProducts().filter(p => p.category === 'FRG' && (!searchQuery || productText(p).includes(searchQuery)));
       if(fragItems.length === 0){
         fragGrid.innerHTML = searchQuery ? buildSearchMissState(searchQuery) : `<div class="empty-state"><p dir="auto">${T_DICT[currentLang].fragrance_empty}</p></div>`;
       } else {
@@ -2313,7 +2327,7 @@
         <div class="cart-item" style="animation-delay:${i * 60}ms">
           ${l.image ? `<img src="${escapeAttr(l.image)}" alt="" onerror="this.style.display='none'">` : `<div class="cart-item-ph"></div>`}
           <div class="cart-item-info">
-            <h5>${escapeHtml(l.name)}</h5>
+            <h5 dir="auto">${escapeHtml(pName(l))}</h5>
             <div class="cart-item-meta">${catLabel}${l.color ? ` · ${escapeHtml(l.color)}` : ''}</div>
             <div class="qty-stepper">
               <button data-id="${escapeAttr(key)}" data-delta="-1" aria-label="Decrease quantity">−</button>
@@ -2476,7 +2490,7 @@
       document.title = SITE_TITLE;
       return;
     }
-    document.title = `${p.name} — ASIORA`;
+    document.title = `${pName(p)} — ASIORA`;
     // The product may load after the menu was set; keep Shop / Fragrance in sync.
     if(productViewVisible()){
       const navTab = p.category === 'FRG' ? 'fragrance' : 'shop';
@@ -2508,15 +2522,15 @@
       <div class="pd-grid">
         <div class="pd-gallery">
           <div class="pd-main">
-            ${mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(p.name)}${selectedLabel ? ' — ' + escapeAttr(selectedLabel) : ''}">` : `<span class="ph">${T_DICT[currentLang].no_photo}</span>`}
+            ${mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(pName(p))}${selectedLabel ? ' — ' + escapeAttr(selectedLabel) : ''}">` : `<span class="ph">${T_DICT[currentLang].no_photo}</span>`}
           </div>
         </div>
         <div class="pd-info">
           <div class="eyebrow">${escapeHtml(catLabel)}</div>
-          <h1 class="pd-name" dir="auto">${escapeHtml(p.name)}</h1>
+          <h1 class="pd-name" dir="auto">${escapeHtml(pName(p))}</h1>
           <div class="pd-price">${fmtIQD(p.price)}</div>
           <div class="pd-stock${isLow ? ' is-low' : ''}${p.stock <= 0 ? ' is-out' : ''}">${stockLabel}</div>
-          ${p.desc ? `<p class="pd-desc" dir="auto">${escapeHtml(p.desc)}</p>` : ''}
+          ${pDesc(p) ? `<p class="pd-desc" dir="auto">${escapeHtml(pDesc(p))}</p>` : ''}
           ${buildNotesBlock(p)}
           ${colors.length ? `
             <div class="pd-colors">
@@ -2555,7 +2569,7 @@
     if(shareBtn) shareBtn.addEventListener('click', async () => {
       const url = productUrl(p);
       try{
-        if(navigator.share){ await navigator.share({ title: `${p.name} — ASIORA`, url }); return; }
+        if(navigator.share){ await navigator.share({ title: `${pName(p)} — ASIORA`, url }); return; }
         await navigator.clipboard.writeText(url);
       }catch(e){
         if(e && e.name === 'AbortError') return;
@@ -2743,11 +2757,15 @@
       editingId = id;
       document.getElementById('p-id').value = id;
       document.getElementById('p-name').value = p.name || '';
+      document.getElementById('p-name-ku').value = p.name_ku || '';
+      document.getElementById('p-name-ar').value = p.name_ar || '';
       document.getElementById('p-price').value = p.price || 0;
       document.getElementById('p-stock').value = p.stock || 0;
       document.getElementById('p-category').value = p.category || 'WMN';
       document.getElementById('p-image').value = p.image || '';
       document.getElementById('p-desc').value = p.desc || '';
+      document.getElementById('p-desc-ku').value = p.desc_ku || '';
+      document.getElementById('p-desc-ar').value = p.desc_ar || '';
       imagePreview.innerHTML = p.image ? `<img src="${escapeAttr(p.image)}" onerror="this.parentElement.innerHTML='<span>Could not load image</span>'">` : `<span>Image preview</span>`;
       setColorsInForm(p.colors || []);
       setNotesInForm(p.notes);
@@ -2767,6 +2785,10 @@
         category: document.getElementById('p-category').value,
         image: document.getElementById('p-image').value.trim(),
         desc: document.getElementById('p-desc').value.trim(),
+        name_ku: document.getElementById('p-name-ku').value.trim(),
+        name_ar: document.getElementById('p-name-ar').value.trim(),
+        desc_ku: document.getElementById('p-desc-ku').value.trim(),
+        desc_ar: document.getElementById('p-desc-ar').value.trim(),
         colors: getColorsFromForm(),
         notes: getNotesFromForm()
       };
