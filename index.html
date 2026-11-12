@@ -963,7 +963,12 @@
 
   /* Arabic & Kurdish script: letter-spacing breaks the joins */
   html[lang="ku"] *, html[lang="ar"] *{ letter-spacing:normal !important; }
-  html[lang="ku"] .logo-text, html[lang="ar"] .logo-text{ letter-spacing:0.42em !important; }
+  html[dir="rtl"] .tab-btn:nth-of-type(1){ order:4; }
+  html[dir="rtl"] .tab-btn:nth-of-type(2){ order:3; }
+  html[dir="rtl"] .tab-btn:nth-of-type(3){ order:2; }
+  html[dir="rtl"] .tab-btn:nth-of-type(4){ order:1; }
+  html[lang="ku"] .logo-text, html[lang="ar"] .logo-text,
+  html[lang="ku"] .logo-text span, html[lang="ar"] .logo-text span{ letter-spacing:0.42em !important; }
 </style>
 </head>
 <body data-page="site">
@@ -980,10 +985,10 @@
     <a class="logo" id="headerLogo" href="#about" data-subtab="about" aria-label="ASIORA"><img class="logo-emblem" src="images/logo-emblem.webp" width="360" height="214" alt=""><span class="logo-mark">A</span><span class="logo-text" id="headerLogoText">ASIO<span>RA</span></span></a>
     <div class="tabs" id="tabsRow">
       <div class="tab-indicator" id="tabIndicator"></div>
-      <a class="tab-btn" href="#about" data-subtab="about">About</a>
-      <a class="tab-btn" href="#fragrance" data-subtab="fragrance">Fragrance</a>
-      <a class="tab-btn active" href="#shop" data-subtab="shop">Shop</a>
-      <a class="tab-btn" href="#orders" data-subtab="orders">Orders</a>
+      <a class="tab-btn" href="#about" data-subtab="about" data-t="tab_about">About</a>
+      <a class="tab-btn" href="#fragrance" data-subtab="fragrance" data-t="tab_fragrance">Fragrance</a>
+      <a class="tab-btn active" href="#shop" data-subtab="shop" data-t="tab_shop">Shop</a>
+      <a class="tab-btn" href="#orders" data-subtab="orders" data-t="tab_orders">Orders</a>
     </div>
     <div class="nav-actions">
       <select id="langSelector" class="lang-selector">
@@ -1313,9 +1318,9 @@
       <div class="foot-col">
         <h5 data-t="footer_col_shop">Shop</h5>
         <ul>
-          <li><a href="#fragrance" data-subtab="fragrance">Fragrance</a></li>
-          <li><a href="#shop" data-subtab="shop">Storefront</a></li>
-          <li><a href="#orders" data-subtab="orders">Your orders</a></li>
+          <li><a href="#fragrance" data-subtab="fragrance" data-t="tab_fragrance">Fragrance</a></li>
+          <li><a href="#shop" data-subtab="shop" data-t="foot_storefront">Storefront</a></li>
+          <li><a href="#orders" data-subtab="orders" data-t="foot_orders">Your orders</a></li>
         </ul>
       </div>
       <div class="foot-col">
@@ -1593,7 +1598,8 @@
       pd_back: "Back", pd_color: "Colour", pd_share: "Share", pd_copied: "Link copied", pd_ask: "Ask about this piece",
       pd_delivery_t: "Delivery", pd_delivery: "Nationwide across Iraq — confirmed and arranged directly with you on WhatsApp.",
       pd_payment_t: "Payment", pd_payment: "Pay on delivery. No account or card needed.",
-      pd_related: "You may also like", pd_not_found: "This piece is no longer available.", pd_ask_msg: "Hi! I'm interested in"
+      pd_related: "You may also like", pd_not_found: "This piece is no longer available.", pd_ask_msg: "Hi! I'm interested in",
+      main_color_label: "Main", foot_storefront: "Storefront", foot_orders: "Your orders", shop_empty: "Nothing here yet.", no_photo: "No photo yet", img_unavailable: "Image unavailable", order_label: "Order"
     },
     ku: {
       tab_about:"دەربارە", tab_fragrance:"بۆن", tab_shop:"دوکان", tab_orders: "داواکارییەکان",
@@ -1637,7 +1643,8 @@
       pd_back: "گەڕانەوە", pd_color: "ڕەنگ", pd_share: "هاوبەشکردن", pd_copied: "بەستەر کۆپی کرا", pd_ask: "پرسیار دەربارەی ئەم پارچەیە",
       pd_delivery_t: "گەیاندن", pd_delivery: "بۆ هەموو عێراق — ڕاستەوخۆ لە ڕێگەی واتسئاپەوە لەگەڵت ڕێکدەخرێت.",
       pd_payment_t: "پارەدان", pd_payment: "پارەدان لە کاتی گەیاندن. پێویستت بە هەژمار یان کارت نییە.",
-      pd_related: "لەوانەیە ئەمانەشت بەدڵ بێت", pd_not_found: "ئەم پارچەیە ئێستا بەردەست نییە.", pd_ask_msg: "سڵاو! حەزم لەمەیە"
+      pd_related: "لەوانەیە ئەمانەشت بەدڵ بێت", pd_not_found: "ئەم پارچەیە ئێستا بەردەست نییە.", pd_ask_msg: "سڵاو! حەزم لەمەیە",
+      main_color_label: "سەرەکی", foot_storefront: "فرۆشگا", foot_orders: "داواکارییەکانت", shop_empty: "هێشتا هیچ شتێک لێرە نییە.", no_photo: "هێشتا وێنە نییە", img_unavailable: "وێنە بەردەست نییە", order_label: "داواکاری"
     },
     ar: {
       tab_about:"من نحن", tab_fragrance:"العطور", tab_shop:"المتجر", tab_orders: "الطلبات",
@@ -1681,7 +1688,8 @@
       pd_back: "رجوع", pd_color: "اللون", pd_share: "مشاركة", pd_copied: "تم نسخ الرابط", pd_ask: "اسأل عن هذه القطعة",
       pd_delivery_t: "التوصيل", pd_delivery: "إلى جميع أنحاء العراق — نؤكّده ونرتّبه معك مباشرةً عبر واتساب.",
       pd_payment_t: "الدفع", pd_payment: "الدفع عند الاستلام. لا حاجة لحساب أو بطاقة.",
-      pd_related: "قد يعجبك أيضاً", pd_not_found: "هذه القطعة لم تعد متوفرة.", pd_ask_msg: "مرحباً! أنا مهتم بـ"
+      pd_related: "قد يعجبك أيضاً", pd_not_found: "هذه القطعة لم تعد متوفرة.", pd_ask_msg: "مرحباً! أنا مهتم بـ",
+      main_color_label: "الأساسي", foot_storefront: "واجهة المتجر", foot_orders: "طلباتك", shop_empty: "لا شيء هنا بعد.", no_photo: "لا توجد صورة بعد", img_unavailable: "الصورة غير متوفرة", order_label: "الطلب"
     }
   };
 
@@ -1947,7 +1955,7 @@
       <div class="card" style="animation-delay:${Math.min(i,8) * 60}ms">
         <a class="card-img${mainImage ? ' is-loading' : ''}" href="${productHref(p)}" aria-label="${escapeAttr(p.name)}">
           <span class="card-code">${p.category}</span>
-          ${mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(p.name)}" loading="lazy" onload="this.classList.add('loaded');this.closest('.card-img').classList.remove('is-loading')" onerror="this.closest('.card-img').classList.remove('is-loading');this.parentElement.innerHTML+='<span class=&quot;ph&quot;>Image unavailable</span>'">` : `<span class="ph">No photo yet</span>`}
+          ${mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(p.name)}" loading="lazy" onload="this.classList.add('loaded');this.closest('.card-img').classList.remove('is-loading')" onerror="this.closest('.card-img').classList.remove('is-loading');this.parentElement.innerHTML+='<span class=&quot;ph&quot;>${T_DICT[currentLang].img_unavailable}</span>'">` : `<span class="ph">${T_DICT[currentLang].no_photo}</span>`}
         </a>
         ${swatches}
         <div class="card-body">
@@ -2010,7 +2018,7 @@
       });
       const applyContent = () => {
         if(items.length === 0){
-          grid.innerHTML = searchQuery ? buildSearchMissState(searchQuery) : `<div class="empty-state"><p>Nothing here yet.</p></div>`;
+          grid.innerHTML = searchQuery ? buildSearchMissState(searchQuery) : `<div class="empty-state"><p>${T_DICT[currentLang].shop_empty}</p></div>`;
         } else {
           grid.innerHTML = items.map((p, i) => buildProductCard(p, i)).join('');
           wireAddToBagButtons(grid);
@@ -2307,7 +2315,7 @@
         <div class="eyebrow">${T_DICT[currentLang].confirm_eyebrow}</div>
         <h3>${T_DICT[currentLang].confirm_h3}</h3>
         <p>${confirmationText}</p>
-        <p class="order-id">Order ${orderId}</p>
+        <p class="order-id">${T_DICT[currentLang].order_label} ${orderId}</p>
         <p style="margin-top:18px;">${T_DICT[currentLang].confirm_p2}</p>
         <div class="confirm-sign">
           <span class="script">Asiora</span>
@@ -2373,7 +2381,7 @@
       <div class="pd-grid">
         <div class="pd-gallery">
           <div class="pd-main">
-            ${mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(p.name)}${selectedLabel ? ' — ' + escapeAttr(selectedLabel) : ''}">` : `<span class="ph">No photo yet</span>`}
+            ${mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(p.name)}${selectedLabel ? ' — ' + escapeAttr(selectedLabel) : ''}">` : `<span class="ph">${T_DICT[currentLang].no_photo}</span>`}
           </div>
         </div>
         <div class="pd-info">
