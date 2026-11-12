@@ -934,6 +934,21 @@
     .pd-notes-list{ font-size:18px; }
   }
 
+
+  /* ---------- scent families ---------- */
+  .frag-filters{ margin:56px 0 36px; }
+  .frag-filters[hidden]{ display:none; }
+  .frag-filters + .grid{ margin-top:0; }
+  #fragFilters[hidden] + #fragranceGrid{ margin-top:56px; }
+  .pd-families{ display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:22px; }
+  .pd-families .pd-label{ margin-bottom:0; }
+  .pd-families-list{ font-family:var(--serif);font-style:italic;font-size:20px;color:var(--accent); }
+  .family-checks{ display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin-top:6px; }
+  .family-checks > span{ font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-3);margin-right:4px; }
+  .family-checks label{ display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);cursor:pointer;
+    text-transform:none;letter-spacing:0;margin:0; }
+  .family-checks input{ width:auto;accent-color:var(--midnight); }
+
   :focus-visible{ outline:1px solid var(--text);outline-offset:4px; }
 
   /* ---------- responsive ---------- */
@@ -1170,7 +1185,8 @@
           <button class="btn-lux" id="frag-cta" data-t="frag_cta" onclick="document.getElementById('fragranceGrid').scrollIntoView({behavior:'smooth',block:'start'})">Shop the Collection</button>
         </div>
       </div>
-      <div class="grid" id="fragranceGrid" style="margin-top:56px;"></div>
+      <div class="filters frag-filters" id="fragFilters" hidden></div>
+      <div class="grid" id="fragranceGrid"></div>
     </section>
 
   <div class="page-head reveal" style="margin-top:64px;">
@@ -1332,6 +1348,14 @@
             <div class="notes-input"><span>Top</span><input type="text" id="p-notes-top" placeholder="e.g. Bergamot, Pear, Pink Pepper"></div>
             <div class="notes-input"><span>Heart</span><input type="text" id="p-notes-heart" placeholder="e.g. Jasmine, Orange Blossom, Rose"></div>
             <div class="notes-input"><span>Base</span><input type="text" id="p-notes-base" placeholder="e.g. Vanilla, Amber, Sandalwood, Musk"></div>
+            <div class="family-checks">
+              <span>Scent family</span>
+              <label><input type="checkbox" value="fresh"> Fresh</label>
+              <label><input type="checkbox" value="fruity"> Fruity</label>
+              <label><input type="checkbox" value="floral"> Floral</label>
+              <label><input type="checkbox" value="spicy"> Spicy</label>
+              <label><input type="checkbox" value="woody"> Warm &amp; Woody</label>
+            </div>
           </div>
           <button type="submit" class="submit-btn" id="productSaveBtn">Save piece</button>
           <button type="button" class="submit-btn" id="productCancelBtn" style="display:none;background:none;border:1px solid var(--line-strong);color:var(--bone-dim);margin-top:8px;">Cancel edit</button>
@@ -1654,7 +1678,8 @@
       pd_payment_t: "Payment", pd_payment: "Pay on delivery. No account or card needed.",
       pd_related: "You may also like", pd_not_found: "This piece is no longer available.", pd_ask_msg: "Hi! I'm interested in",
       main_color_label: "Main", foot_storefront: "Storefront", foot_orders: "Your orders", shop_empty: "Nothing here yet.", no_photo: "No photo yet", img_unavailable: "Image unavailable", order_label: "Order",
-      notes_title: "Fragrance notes", notes_top: "Top", notes_heart: "Heart", notes_base: "Base"
+      notes_title: "Fragrance notes", notes_top: "Top", notes_heart: "Heart", notes_base: "Base",
+      fam_title: "Scent family", fam_fresh: "Fresh", fam_fruity: "Fruity", fam_floral: "Floral", fam_spicy: "Spicy", fam_woody: "Warm & Woody"
     },
     ku: {
       tab_about:"دەربارە", tab_fragrance:"بۆن", tab_shop:"دوکان", tab_orders: "داواکارییەکان",
@@ -1700,7 +1725,8 @@
       pd_payment_t: "پارەدان", pd_payment: "پارەدان لە کاتی گەیاندن. پێویستت بە هەژمار یان کارت نییە.",
       pd_related: "لەوانەیە ئەمانەشت بەدڵ بێت", pd_not_found: "ئەم پارچەیە ئێستا بەردەست نییە.", pd_ask_msg: "سڵاو! حەزم لەمەیە",
       main_color_label: "سەرەکی", foot_storefront: "فرۆشگا", foot_orders: "داواکارییەکانت", shop_empty: "هێشتا هیچ شتێک لێرە نییە.", no_photo: "هێشتا وێنە نییە", img_unavailable: "وێنە بەردەست نییە", order_label: "داواکاری",
-      notes_title: "نۆتەکانی بۆن", notes_top: "سەرەوە", notes_heart: "دڵ", notes_base: "بنەڕەت"
+      notes_title: "نۆتەکانی بۆن", notes_top: "سەرەوە", notes_heart: "دڵ", notes_base: "بنەڕەت",
+      fam_title: "جۆری بۆن", fam_fresh: "فێنک", fam_fruity: "میوەیی", fam_floral: "گوڵاوی", fam_spicy: "بەهاراتی", fam_woody: "گەرم و داری"
     },
     ar: {
       tab_about:"من نحن", tab_fragrance:"العطور", tab_shop:"المتجر", tab_orders: "الطلبات",
@@ -1746,7 +1772,8 @@
       pd_payment_t: "الدفع", pd_payment: "الدفع عند الاستلام. لا حاجة لحساب أو بطاقة.",
       pd_related: "قد يعجبك أيضاً", pd_not_found: "هذه القطعة لم تعد متوفرة.", pd_ask_msg: "مرحباً! أنا مهتم بـ",
       main_color_label: "الأساسي", foot_storefront: "واجهة المتجر", foot_orders: "طلباتك", shop_empty: "لا شيء هنا بعد.", no_photo: "لا توجد صورة بعد", img_unavailable: "الصورة غير متوفرة", order_label: "الطلب",
-      notes_title: "مكونات العطر", notes_top: "النفحات العليا", notes_heart: "نفحات القلب", notes_base: "النفحات الأساسية"
+      notes_title: "مكونات العطر", notes_top: "النفحات العليا", notes_heart: "نفحات القلب", notes_base: "النفحات الأساسية",
+      fam_title: "عائلة العطر", fam_fresh: "منعش", fam_fruity: "فاكهي", fam_floral: "زهري", fam_spicy: "حار", fam_woody: "دافئ وخشبي"
     }
   };
 
@@ -1978,6 +2005,30 @@
 
   let selectedColors = {}; // productId -> chosen color label, persists across re-renders
 
+  // The five Kurdistan by ASIORA bottles: notes from the posters, plus the
+  // scent families used by the Fragrance page filter.
+  const FRAGRANCE_PRESETS = {
+    white:  { top:['Bergamot','Pear','Pink Pepper'], heart:['Jasmine','Orange Blossom','Rose'], base:['Vanilla','Amber','Sandalwood','Musk'],
+              families:['floral','woody'], desc:'Where elegance meets essence. A fragrance inspired by the mountains of Kurdistan.' },
+    black:  { top:['Blood Orange','Black Pepper','Spices'], heart:['Lavender','Orange Blossom'], base:['Woods','Moss','Amber','Tonka Bean'],
+              families:['spicy','woody'], desc:'A scent inspired by strength, heritage and timeless beauty.' },
+    silver: { top:['Green Leaves','Berry Blend'], heart:['Aquatic Florals'], base:['Cashmeran','Musk','Cedarwood'], families:['fresh','fruity'] },
+    pink:   { top:['Mandarin','Peach'], heart:['Mountain Herbs','Rose'], base:['Cashmeran','Mountain Resin','Sandalwood'], families:['fruity','floral'] },
+    red:    { top:['Green Leaves','Berry Blend'], heart:['Aquatic Florals'], base:['Cashmeran','Musk','Cedarwood'], families:['fresh','fruity'] }
+  };
+  const SCENT_FAMILIES = ['fresh','fruity','floral','spicy','woody'];
+  const notesKey = n => ['top','heart','base'].map(k => ((n && n[k]) || []).map(x => String(x).trim().toLowerCase()).join(',')).join('|');
+  // Families saved on the product win; otherwise recognise a preset bottle by its notes.
+  function familiesOf(p){
+    if(p && Array.isArray(p.families) && p.families.length) return SCENT_FAMILIES.filter(f => p.families.includes(f));
+    if(!p || !p.notes) return [];
+    const key = notesKey(p.notes);
+    const match = Object.values(FRAGRANCE_PRESETS).find(pr => notesKey(pr) === key);
+    return match ? match.families.slice() : [];
+  }
+  function familyLabel(f){ return T_DICT[currentLang]['fam_' + f] || f; }
+  let activeFamily = 'all';
+
   // Fragrance note names are stored in English; these show them in Kurdish
   // and Arabic. Any note not listed here is shown exactly as typed.
   const NOTE_I18N = {
@@ -2014,6 +2065,7 @@
     const dict = T_DICT[currentLang];
     return `
       <div class="pd-notes">
+        ${familiesOf(p).length ? `<div class="pd-families"><span class="pd-label">${dict.fam_title}</span><span class="pd-families-list">${familiesOf(p).map(f => escapeHtml(familyLabel(f))).join(' · ')}</span></div>` : ''}
         <div class="pd-label">${dict.notes_title}</div>
         ${tiers.filter(t => t.list.length).map(t => `
           <div class="pd-notes-row">
@@ -2136,7 +2188,12 @@
       else { grid.classList.add('swapping'); setTimeout(() => { if(token === shopRenderToken) applyContent(); }, 160); }
     }
     if(fragGrid){
-      const fragItems = allProducts().filter(p => p.category === 'FRG' && (!searchQuery || p.name.toLowerCase().includes(searchQuery) || (p.desc && p.desc.toLowerCase().includes(searchQuery))));
+      const allFrag = allProducts().filter(p => p.category === 'FRG');
+      renderFragFilters(allFrag);
+      const notesText = p => notesOf(p) ? notesOf(p).flatMap(t => t.list.flatMap(n => [n, noteLabel(n)])).join(' ').toLowerCase() : '';
+      const fragItems = allFrag.filter(p =>
+        (activeFamily === 'all' || familiesOf(p).includes(activeFamily)) &&
+        (!searchQuery || p.name.toLowerCase().includes(searchQuery) || (p.desc && p.desc.toLowerCase().includes(searchQuery)) || notesText(p).includes(searchQuery)));
       if(fragItems.length === 0){
         fragGrid.innerHTML = searchQuery ? buildSearchMissState(searchQuery) : `<div class="empty-state"><p dir="auto">${T_DICT[currentLang].fragrance_empty}</p></div>`;
       } else {
@@ -2145,6 +2202,28 @@
         wireColorSwatches(fragGrid);
       }
     }
+  }
+
+  // Scent-family chips above the fragrance grid; only families that some
+  // fragrance actually has are shown, and the row hides if none do.
+  function renderFragFilters(allFrag){
+    const el = document.getElementById('fragFilters');
+    if(!el) return;
+    const present = SCENT_FAMILIES.filter(f => allFrag.some(p => familiesOf(p).includes(f)));
+    if(!present.includes(activeFamily)) activeFamily = 'all';
+    if(!present.length){ el.hidden = true; el.innerHTML = ''; return; }
+    el.hidden = false;
+    const chip = (f, label) => `<button type="button" class="chip${activeFamily === f ? ' active' : ''}" data-family="${f}" aria-pressed="${activeFamily === f}">${escapeHtml(label)}</button>`;
+    el.innerHTML = chip('all', T_DICT[currentLang].cat_all) + present.map(f => chip(f, familyLabel(f))).join('');
+  }
+  const fragFiltersEl = document.getElementById('fragFilters');
+  if(fragFiltersEl){
+    fragFiltersEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip');
+      if(!btn) return;
+      activeFamily = btn.dataset.family;
+      renderShop();
+    });
   }
 
   function escapeHtml(str){
@@ -2688,22 +2767,19 @@
       if(ov && ov.style.display !== 'none') routeOrdersView(user);
     });
 
-    // Notes from the Kurdistan by ASIORA posters, one per bottle.
-    const NOTES_PRESETS = {
-      white:  { top:['Bergamot','Pear','Pink Pepper'], heart:['Jasmine','Orange Blossom','Rose'], base:['Vanilla','Amber','Sandalwood','Musk'],
-                desc:'Where elegance meets essence. A fragrance inspired by the mountains of Kurdistan.' },
-      black:  { top:['Blood Orange','Black Pepper','Spices'], heart:['Lavender','Orange Blossom'], base:['Woods','Moss','Amber','Tonka Bean'],
-                desc:'A scent inspired by strength, heritage and timeless beauty.' },
-      silver: { top:['Green Leaves','Berry Blend'], heart:['Aquatic Florals'], base:['Cashmeran','Musk','Cedarwood'] },
-      pink:   { top:['Mandarin','Peach'], heart:['Mountain Herbs','Rose'], base:['Cashmeran','Mountain Resin','Sandalwood'] },
-      red:    { top:['Green Leaves','Berry Blend'], heart:['Aquatic Florals'], base:['Cashmeran','Musk','Cedarwood'] }
-    };
+    const NOTES_PRESETS = FRAGRANCE_PRESETS;
     const splitNotes = s => s.split(',').map(x => x.trim()).filter(Boolean);
     function setNotesInForm(notes){
       const n = notes || {};
       document.getElementById('p-notes-top').value = (n.top || []).join(', ');
       document.getElementById('p-notes-heart').value = (n.heart || []).join(', ');
       document.getElementById('p-notes-base').value = (n.base || []).join(', ');
+    }
+    function setFamiliesInForm(list){
+      document.querySelectorAll('.family-checks input').forEach(cb => { cb.checked = !!list && list.includes(cb.value); });
+    }
+    function getFamiliesFromForm(){
+      return Array.from(document.querySelectorAll('.family-checks input:checked')).map(cb => cb.value);
     }
     function getNotesFromForm(){
       return {
@@ -2717,6 +2793,7 @@
         const preset = NOTES_PRESETS[btn.dataset.notesPreset];
         if(!preset) return;
         setNotesInForm(preset);
+        setFamiliesInForm(preset.families);
         const descEl = document.getElementById('p-desc');
         if(preset.desc && !descEl.value.trim()) descEl.value = preset.desc;
         document.getElementById('p-category').value = 'FRG';
@@ -2734,6 +2811,7 @@
       categorySelect.selectedIndex = 0;
       setColorsInForm([]);
       setNotesInForm(null);
+      setFamiliesInForm([]);
     }
     document.getElementById('productCancelBtn').addEventListener('click', resetProductForm);
 
@@ -2751,6 +2829,7 @@
       imagePreview.innerHTML = p.image ? `<img src="${escapeAttr(p.image)}" onerror="this.parentElement.innerHTML='<span>Could not load image</span>'">` : `<span>Image preview</span>`;
       setColorsInForm(p.colors || []);
       setNotesInForm(p.notes);
+      setFamiliesInForm(familiesOf(p));
       document.getElementById('adminFormTitle').textContent = 'Edit piece';
       document.getElementById('productSaveBtn').textContent = 'Save changes';
       document.getElementById('productCancelBtn').style.display = 'block';
@@ -2768,7 +2847,8 @@
         image: document.getElementById('p-image').value.trim(),
         desc: document.getElementById('p-desc').value.trim(),
         colors: getColorsFromForm(),
-        notes: getNotesFromForm()
+        notes: getNotesFromForm(),
+        families: getFamiliesFromForm()
       };
       if(!data.name || isNaN(data.price) || isNaN(data.stock)){
         productFormMsg.textContent = 'Fill in at least a name, price, and stock.';
