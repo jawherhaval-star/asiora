@@ -254,7 +254,7 @@
   /* ---------- loading screen ---------- */
   #loadScreen{
     position:fixed;inset:0;z-index:1000;
-    background:var(--midnight);
+    background:var(--ivory);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
     transition:opacity .9s var(--ease), visibility .9s var(--ease);
   }
@@ -841,7 +841,7 @@
     animation:loadLogoIn 1.3s var(--ease-out) .15s forwards;
   }
   @keyframes loadLogoIn{ to{ opacity:1;transform:none; } }
-  #loadScreen .load-caption{ color:#a9a59e; }
+  #loadScreen .load-caption{ color:var(--text-2); }
   .foot-brand .logo-text{ display:none; }
   .foot-brand .logo::after{ display:none; }
   .foot-logo-img{ width:200px;height:auto; }
