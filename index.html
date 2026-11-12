@@ -18,15 +18,16 @@
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="ASIORA wordmark beside the black and white Kurdistan by Asiora fragrance bottles">
+<meta property="og:image:alt" content="ASIORA logo beside the black and white Kurdistan by Asiora fragrance bottles">
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="ar_IQ">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ASIORA — Considered clothing &amp; fragrance">
 <meta name="twitter:description" content="Clothing, objects and fragrance from Erbil, Kurdistan. Order directly with us — no account, no card needed.">
 <meta name="twitter:image" content="https://asioraofficial.com/images/og-asiora.jpg">
-<meta name="twitter:image:alt" content="ASIORA wordmark beside the black and white Kurdistan by Asiora fragrance bottles">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%2314161F'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='34' fill='%23C6A15B' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<meta name="twitter:image:alt" content="ASIORA logo beside the black and white Kurdistan by Asiora fragrance bottles">
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&family=Noto+Naskh+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
@@ -235,35 +236,11 @@
   /* ---------- loading screen ---------- */
   #loadScreen{
     position:fixed;inset:0;z-index:1000;
-    background:var(--paper);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
+    background:var(--midnight);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
     transition:opacity .9s var(--ease), visibility .9s var(--ease);
   }
   #loadScreen.hidden{ opacity:0;visibility:hidden;pointer-events:none; }
-  .load-preline{ width:1px;height:0;background:var(--gold);animation:loadLineGrow .8s var(--ease-out) .1s forwards; }
-  @keyframes loadLineGrow{ to{ height:40px; } }
-  .load-word{
-    display:flex;direction:ltr;
-    font-family:var(--serif);font-weight:300;
-    font-size:clamp(30px,6vw,46px);
-    letter-spacing:0.5em;margin-right:-0.5em;
-    text-transform:uppercase;line-height:1;
-  }
-  .load-word .letter{
-    display:inline-block;opacity:0;transform:translateY(10px);
-    animation:loadLetterIn 1s var(--ease-out) forwards;
-  }
-  .load-word .letter.gold{ color:inherit; }
-  .load-word{ color:var(--gold); }
-  @keyframes loadLetterIn{ to{ opacity:1;transform:none; } }
-  .load-word .letter:nth-child(1){ animation-delay:.25s; }
-  .load-word .letter:nth-child(2){ animation-delay:.33s; }
-  .load-word .letter:nth-child(3){ animation-delay:.41s; }
-  .load-word .letter:nth-child(4){ animation-delay:.49s; }
-  .load-word .letter:nth-child(5){ animation-delay:.57s; }
-  .load-word .letter:nth-child(6){ animation-delay:.65s; }
-  .load-underline{ width:0;height:1px;background:var(--rule-strong);animation:loadUnderlineGrow .9s var(--ease-out) .9s forwards; }
-  @keyframes loadUnderlineGrow{ to{ width:120px; } }
   .load-caption{
     font-family:var(--serif);font-style:italic;font-size:16px;color:var(--text-2);
     opacity:0;animation:loadCaptionIn .8s var(--ease-out) 1.1s forwards;
@@ -825,6 +802,29 @@
     font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-3);direction:ltr;
   }
 
+
+  /* ---------- brand logo ---------- */
+  .logo{ gap:14px; }
+  .logo-emblem{ height:34px;width:auto;flex-shrink:0;transition:transform .6s var(--ease-out); }
+  .logo:hover .logo-emblem{ transform:translateY(-2px); }
+  .load-logo{
+    width:min(300px,62vw);height:auto;
+    opacity:0;transform:translateY(10px) scale(.98);
+    animation:loadLogoIn 1.3s var(--ease-out) .15s forwards;
+  }
+  @keyframes loadLogoIn{ to{ opacity:1;transform:none; } }
+  #loadScreen .load-caption{ color:#a9a59e; }
+  .foot-brand .logo-text{ display:none; }
+  .foot-brand .logo::after{ display:none; }
+  .foot-logo-img{ width:200px;height:auto; }
+  @media (max-width:760px){
+    .logo{ gap:10px; }
+    .logo-emblem{ height:26px; }
+  }
+  @media (max-width:380px){
+    .logo-text{ font-size:18px !important;letter-spacing:0.28em !important; }
+  }
+
   :focus-visible{ outline:1px solid var(--text);outline-offset:4px; }
 
   /* ---------- responsive ---------- */
@@ -894,18 +894,13 @@
 
   /* Arabic & Kurdish script: letter-spacing breaks the joins */
   html[lang="ku"] *, html[lang="ar"] *{ letter-spacing:normal !important; }
-  html[lang="ku"] .logo-text, html[lang="ar"] .logo-text,
-  html[lang="ku"] .load-word, html[lang="ar"] .load-word{ letter-spacing:0.42em !important; }
+  html[lang="ku"] .logo-text, html[lang="ar"] .logo-text{ letter-spacing:0.42em !important; }
 </style>
 </head>
 <body data-page="site">
 
 <div id="loadScreen" aria-hidden="true">
-  <div class="load-preline"></div>
-  <div class="load-word">
-    <span class="letter gold">A</span><span class="letter">s</span><span class="letter">i</span><span class="letter">o</span><span class="letter">r</span><span class="letter gold">a</span>
-  </div>
-  <div class="load-underline"></div>
+  <img class="load-logo" src="images/logo-asiora.webp" width="640" height="507" alt="">
   <div class="load-caption" id="loadCaption"></div>
 </div>
 
@@ -913,7 +908,7 @@
 
 <header id="siteHeader">
   <nav class="wrap">
-    <a class="logo" id="headerLogo" href="#about" data-subtab="about"><span class="logo-mark">A</span><span class="logo-text" id="headerLogoText">ASIO<span>RA</span></span></a>
+    <a class="logo" id="headerLogo" href="#about" data-subtab="about" aria-label="ASIORA"><img class="logo-emblem" src="images/logo-emblem.webp" width="360" height="214" alt=""><span class="logo-mark">A</span><span class="logo-text" id="headerLogoText">ASIO<span>RA</span></span></a>
     <div class="tabs" id="tabsRow">
       <div class="tab-indicator" id="tabIndicator"></div>
       <a class="tab-btn" href="#about" data-subtab="about">About</a>
@@ -1238,7 +1233,7 @@
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-brand">
-        <a class="logo" id="footerLogo" href="#about" data-subtab="about"><span class="logo-mark">A</span><span class="logo-text" id="footerLogoText">ASIO<span>RA</span></span></a>
+        <a class="logo" id="footerLogo" href="#about" data-subtab="about" aria-label="ASIORA"><img class="foot-logo-img" src="images/logo-asiora.webp" width="640" height="507" alt="ASIORA" loading="lazy"><span class="logo-mark">A</span><span class="logo-text" id="footerLogoText">ASIO<span>RA</span></span></a>
         <p data-t="footer_brand_desc">Considered clothing, objects, and fragrance, edited with restraint.</p>
       </div>
       <div class="foot-col">
