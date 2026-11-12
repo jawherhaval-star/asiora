@@ -1,16 +1,15 @@
-// Builds a small static page for every product at /p/<id>/ so that links
-// shared on WhatsApp, Instagram, Facebook, X, iMessage etc. show that
-// product's photo, name and price in the preview card.
+// Builds a page for every product at /p/<id>/ plus sitemap.xml.
 //
-// Link-preview crawlers ignore everything after "#" and don't run
-// JavaScript, so the storefront's #product/<id> links can't carry
-// per-product previews. These pages carry the preview tags and then send
-// real visitors straight on to /#product/<id>.
+// Each page is a copy of the storefront (index.html) that opens straight on
+// that product, with its own title, description, canonical URL, link-preview
+// tags (WhatsApp, Instagram, Facebook, X, iMessage) and schema.org Product
+// data for Google. Link-preview crawlers ignore everything after "#" and
+// don't run JavaScript, so #product/<id> links alone can't do this.
 //
 // Run with Node 18+ (no dependencies):  node scripts/build-product-pages.mjs
 // The "Product link previews" GitHub Action runs it hourly.
 
-import { mkdirSync, rmSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const PROJECT_ID = 'asiora-c2097';
@@ -55,7 +54,7 @@ async function fetchProducts() {
     if (!res.ok) throw new Error(`Firestore request failed: ${res.status} ${await res.text()}`);
     const data = await res.json();
     for (const doc of data.documents || []) {
-      products.push({ id: doc.name.split('/').pop(), ...decodeFields(doc.fields || {}) });
+      products.push({ id: doc.name.split('/').pop(), updateTime: doc.updateTime, ...decodeFields(doc.fields || {}) });
     }
     pageToken = data.nextPageToken || '';
   } while (pageToken);
@@ -73,14 +72,25 @@ function absoluteImage(src) {
   return `${SITE}/${src.replace(/^\.?\//, '')}`;
 }
 
+const TEMPLATE = readFileSync('index.html', 'utf8');
+const HEAD_START = TEMPLATE.indexOf('<title>');
+const HEAD_END_MARK = '<meta name="twitter:image:alt"';
+const HEAD_END = TEMPLATE.indexOf('\n', TEMPLATE.indexOf(HEAD_END_MARK)) + 1;
+if (HEAD_START < 0 || HEAD_END <= 0 || !TEMPLATE.includes('<body data-page="site">')) {
+  throw new Error('index.html no longer matches what build-product-pages.mjs expects (title/meta block or <body data-page="site">).');
+}
+
+// Safe inside <script type="application/ld+json">.
+const jsonLd = (obj) => JSON.stringify(obj, null, 2).replace(/</g, '\\u003c');
+
 function pageFor(p) {
   const id = encodeURIComponent(p.id);
   const url = `${SITE}/p/${id}/`;
-  const target = `/#product/${id}`;
   const name = p.name || 'ASIORA';
   const title = `${name} — ASIORA`;
   const category = CATEGORY_LABELS[p.category] || '';
-  const descParts = [fmtIQD(p.price)];
+  const price = Math.round(Number(p.price) || 0);
+  const descParts = [fmtIQD(price)];
   if (p.desc) descParts.push(p.desc);
   else if (category) descParts.push(`${category} by ASIORA, Erbil.`);
   const notes = p.notes || {};
@@ -89,17 +99,30 @@ function pageFor(p) {
   const description = descParts.join(' · ');
   const image = absoluteImage(p.image);
 
-  return `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(title)}</title>
+  const product = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name,
+    image: [image],
+    description,
+    sku: p.id,
+    brand: { '@type': 'Brand', name: 'ASIORA' },
+    ...(category ? { category } : {}),
+    offers: {
+      '@type': 'Offer',
+      url,
+      price: String(price),
+      priceCurrency: 'IQD',
+      availability: (Number(p.stock) || 0) > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: { '@type': 'Organization', name: 'ASIORA' },
+    },
+  };
+
+  const head = `<title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<link rel="canonical" href="${esc(url)}">
 <meta name="theme-color" content="#F3EEE5">
-<link rel="icon" type="image/png" sizes="64x64" href="/images/favicon-64.png">
-<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="canonical" href="${esc(url)}">
 <meta property="og:type" content="product">
 <meta property="og:site_name" content="ASIORA">
 <meta property="og:url" content="${esc(url)}">
@@ -108,26 +131,30 @@ function pageFor(p) {
 <meta property="og:image" content="${esc(image)}">
 <meta property="og:image:secure_url" content="${esc(image)}">
 <meta property="og:image:alt" content="${esc(name)}">
-<meta property="product:price:amount" content="${esc(Math.round(Number(p.price) || 0))}">
+<meta property="product:price:amount" content="${price}">
 <meta property="product:price:currency" content="IQD">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
 <meta name="twitter:image" content="${esc(image)}">
-<script>location.replace(${JSON.stringify(target)});</script>
-<style>
-  body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
-    background:#F3EEE5;color:#14161F;font-family:Georgia,'Times New Roman',serif;text-align:center;padding:24px}
-  img{width:180px;height:auto}
-  a{color:#14161F;font-family:Arial,sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
-</style>
-</head>
-<body>
-<img src="/images/logo-asiora.webp" alt="ASIORA">
-<p>${esc(name)}</p>
-<a href="${esc(target)}">View on ASIORA</a>
-</body>
-</html>
+<script type="application/ld+json">
+${jsonLd(product)}
+</script>
+`;
+
+  return (TEMPLATE.slice(0, HEAD_START) + head + TEMPLATE.slice(HEAD_END))
+    // Pages live two folders down, so make site-relative asset paths absolute.
+    .replace(/(["'(])images\//g, '$1/images/')
+    .replace('<body data-page="site">', `<body data-page="site" data-product="${esc(p.id)}">`);
+}
+
+function sitemap(products) {
+  const urls = [{ loc: `${SITE}/`, lastmod: null }]
+    .concat(products.map(p => ({ loc: `${SITE}/p/${encodeURIComponent(p.id)}/`, lastmod: (p.updateTime || '').slice(0, 10) || null })));
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u => `  <url><loc>${esc(u.loc)}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ''}</url>`).join('\n')}
+</urlset>
 `;
 }
 
@@ -138,4 +165,5 @@ for (const p of products) {
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'index.html'), pageFor(p));
 }
-console.log(`Wrote ${products.length} product page(s) to ${OUT_DIR}/`);
+writeFileSync('sitemap.xml', sitemap(products));
+console.log(`Wrote ${products.length} product page(s) to ${OUT_DIR}/ and sitemap.xml`);

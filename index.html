@@ -26,6 +26,23 @@
 <meta name="twitter:description" content="Clothing, objects and fragrance from Erbil, Kurdistan. Order directly with us — no account, no card needed.">
 <meta name="twitter:image" content="https://asioraofficial.com/images/og-asiora.jpg">
 <meta name="twitter:image:alt" content="ASIORA logo beside the black and white Kurdistan by Asiora fragrance bottles">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "ASIORA",
+  "url": "https://asioraofficial.com/",
+  "logo": "https://asioraofficial.com/images/icon-512.png",
+  "image": "https://asioraofficial.com/images/og-asiora.jpg",
+  "description": "Considered clothing, objects and fragrance rooted in Kurdish heritage, based in Erbil.",
+  "telephone": "+9647501864144",
+  "currenciesAccepted": "IQD",
+  "paymentAccepted": "Cash on delivery",
+  "address": { "@type": "PostalAddress", "addressLocality": "Erbil", "addressRegion": "Kurdistan Region", "addressCountry": "IQ" },
+  "areaServed": { "@type": "Country", "name": "Iraq" },
+  "sameAs": ["https://www.instagram.com/asiora.official"]
+}
+</script>
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2421,8 +2438,19 @@
   let currentProductId = null;
   const SITE_TITLE = document.title;
   const productDetailEl = document.getElementById('productDetail');
+  // Product pages at /p/<id>/ are full copies of this page with
+  // <body data-product="<id>">; they open on that product.
+  const PATH_PRODUCT = document.body.dataset.product || null;
+  function routeProductId(){
+    const m = window.location.hash.match(/^#product\/(.+)$/);
+    if(m) return decodeURIComponent(m[1]);
+    if(PATH_PRODUCT && (!window.location.hash || window.location.hash === '#')) return PATH_PRODUCT;
+    return null;
+  }
+  // On /p/<id>/ an empty hash means "this product", so the shop needs #shop there.
+  function shopHash(){ return PATH_PRODUCT ? 'shop' : ''; }
   // True while the URL points at a product (the panel may still be mid-transition).
-  function productViewVisible(){ return /^#product\//.test(window.location.hash); }
+  function productViewVisible(){ return !!routeProductId(); }
   function productTabFor(id){
     const p = allProducts().find(x => x.id === id);
     return p && p.category === 'FRG' ? 'fragrance' : 'shop';
@@ -2430,7 +2458,7 @@
   // Shareable link: /p/<id>/ carries a per-product link preview (built by the
   // "Product link previews" GitHub Action) and forwards to #product/<id>.
   function productUrl(p){
-    return new URL('p/' + encodeURIComponent(p.id) + '/', location.origin + location.pathname).href;
+    return location.origin + '/p/' + encodeURIComponent(p.id) + '/';
   }
 
   function renderProductPage(){
@@ -2448,6 +2476,15 @@
       return;
     }
     document.title = `${p.name} — ASIORA`;
+    // The product may load after the menu was set; keep Shop / Fragrance in sync.
+    if(productViewVisible()){
+      const navTab = p.category === 'FRG' ? 'fragrance' : 'shop';
+      const current = document.querySelector('#tabsRow .tab-btn.active');
+      if(!current || current.dataset.subtab !== navTab){
+        document.querySelectorAll('#tabsRow .tab-btn[data-subtab]').forEach(b => b.classList.toggle('active', b.dataset.subtab === navTab));
+        window.ASIORA_moveNavIndicator && window.ASIORA_moveNavIndicator();
+      }
+    }
     const colors = effectiveColorsFor(p);
     const selectedLabel = colors.length
       ? (colors.some(c => c.label === selectedColors[p.id]) ? selectedColors[p.id] : colors[0].label)
@@ -2628,7 +2665,7 @@
 
     document.getElementById('adminLogoutBtn').addEventListener('click', () => {
       auth.signOut();
-      window.location.hash = '';
+      window.location.hash = shopHash();
       showTab('shop');
     });
 
@@ -2905,8 +2942,8 @@
     }
 
     function checkHashRoute(){
-      const productMatch = window.location.hash.match(/^#product\/(.+)$/);
-      if(productMatch){ showProduct(decodeURIComponent(productMatch[1])); return; }
+      const productId = routeProductId();
+      if(productId){ showProduct(productId); return; }
       if(window.location.hash === '#admin') showTab('admin');
       else if(window.location.hash === '#orders') showTab('orders');
       else if(window.location.hash === '#about') showTab('about');
@@ -2925,7 +2962,7 @@
     // Always land on the About tab on initial load/refresh, regardless of
     // whatever hash is already in the URL (bookmark, browser autofill, etc.)
     // Exception: shared product links (#product/<id>) open that product.
-    if(/^#product\//.test(window.location.hash)){
+    if(routeProductId()){
       checkHashRoute();
     } else {
       if(window.location.hash !== '#about'){
@@ -2938,7 +2975,7 @@
     document.querySelectorAll('#tabsRow .tab-btn[data-subtab]').forEach(btn=>{
       btn.addEventListener('click', (e)=>{
         e.preventDefault();
-        window.location.hash = btn.dataset.subtab === 'shop' ? '' : btn.dataset.subtab;
+        window.location.hash = btn.dataset.subtab === 'shop' ? shopHash() : btn.dataset.subtab;
         showTab(btn.dataset.subtab);
       });
     });
