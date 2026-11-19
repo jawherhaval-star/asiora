@@ -67,6 +67,8 @@
   "sameAs": ["https://www.instagram.com/asiora.official"]
 }
 </script>
+<!-- Umami analytics: cookieless, no personal data. Pages are tracked manually (hash routes). -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="ae57b6d0-08a5-4f62-8e21-6025e5e51a2c" data-auto-track="false" data-domains="asioraofficial.com,www.asioraofficial.com"></script>
 <link rel="icon" type="image/png" sizes="64x64" href="/images/favicon-64.png">
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1777,6 +1779,45 @@
 
 (function(){
   let currentLang = localStorage.getItem('asiora-lang') || 'en';
+
+  // ================= ANALYTICS (Umami, cookieless) =================
+  // Only page names and shop actions are sent — never customer names,
+  // phone numbers or addresses. Calls made before the Umami script has
+  // loaded are queued; if it never loads (e.g. an ad blocker) they're dropped.
+  const analyticsQueue = [];
+  let umamiWait = null;
+  const umamiReady = () => !!(window.umami && typeof window.umami.track === 'function');
+  function flushAnalytics(){
+    while(umamiReady() && analyticsQueue.length){
+      const fn = analyticsQueue.shift();
+      try{ fn(window.umami); }catch(e){}
+    }
+  }
+  function analytics(fn){
+    analyticsQueue.push(fn);
+    flushAnalytics();
+    if(!analyticsQueue.length || umamiWait) return;
+    let tries = 0;
+    umamiWait = setInterval(() => {
+      flushAnalytics();
+      if(!analyticsQueue.length || ++tries > 60){
+        clearInterval(umamiWait); umamiWait = null; analyticsQueue.length = 0;
+      }
+    }, 250);
+  }
+  let lastTrackedPage = null;
+  function trackPage(path, title){
+    if(path === lastTrackedPage) return;
+    lastTrackedPage = path;
+    analytics(u => u.track(props => ({ ...props, url: path, title: title + ' — ASIORA' })));
+  }
+  function trackEvent(name, data){ analytics(u => u.track(name, data)); }
+  // Products that share a name get their price and a short id so they can be told apart.
+  function analyticsName(p){
+    if(!p) return '-';
+    const twins = (typeof products !== 'undefined' ? products : []).filter(x => x.name === p.name).length > 1;
+    return twins ? `${p.name} · ${Math.round(Number(p.price) || 0).toLocaleString('en-US')} IQD · ${String(p.id).slice(0,4)}` : p.name;
+  }
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const PAGE_MODE = document.body.dataset.page; // 'shop' | 'fragrance'
 
@@ -2353,11 +2394,20 @@
     });
   }
 
+  // ---- contact link clicks outside the product page (About, footer) ----
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href]');
+    if(!a || a.dataset.track || a.closest('#productDetail')) return;
+    if(/wa\.me\//.test(a.href)) trackEvent('WhatsApp contact', { from: a.closest('footer') ? 'footer' : (location.hash.replace('#','') || 'about') });
+    else if(/instagram\.com/.test(a.href)) trackEvent('Instagram click', { product: '-', from: a.closest('footer') ? 'footer' : (location.hash.replace('#','') || 'about') });
+  });
+
   // ---- language selector ----
   const langSelector = document.getElementById('langSelector');
   if(langSelector){
     langSelector.value = currentLang;
     langSelector.addEventListener('change', (e) => {
+      trackEvent('Language', { lang: e.target.value });
       currentLang = e.target.value;
       localStorage.setItem('asiora-lang', currentLang);
       applyTranslations();
@@ -2414,6 +2464,7 @@
     if(currentQty >= product.stock) return;
     if(existing){ existing.qty += 1; } else { cart.push({ id, qty:1, color }); }
     saveCartToStorage();
+    trackEvent('Add to bag', { product: analyticsName(product), color: color || '-', price: Number(product.price) || 0 });
 
     if(btn){
       flyTagToBag(btn, product.category);
@@ -2526,7 +2577,11 @@
     cartBody.querySelectorAll('[data-remove]').forEach(btn=>{
       btn.addEventListener('click', () => removeFromCart(btn.dataset.remove));
     });
-    document.getElementById('checkoutBtn').addEventListener('click', () => { cartView = 'checkout'; renderCart(); });
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      const ls = cartLines();
+      trackEvent('Checkout started', { items: ls.reduce((s,l)=>s+l.qty,0), total: subtotal(ls) });
+      cartView = 'checkout'; renderCart();
+    });
   }
 
   function renderCheckoutView(){
@@ -2563,6 +2618,11 @@
       }
       placeBtn.classList.add('loading');
       placeBtn.disabled = true;
+      trackEvent('WhatsApp order sent', {
+        items: lines.reduce((s,l)=>s+l.qty,0),
+        total: subtotal(lines),
+        products: lines.map(l => analyticsName(l)).join(', ').slice(0, 300)
+      });
       const orderId = 'ASR-' + Date.now().toString(36).toUpperCase();
       const shipping = {
         name: document.getElementById('co-name').value.trim(),
@@ -2665,6 +2725,7 @@
       return;
     }
     document.title = `${pName(p)} — ASIORA`;
+    if(productViewVisible()) trackPage('/p/' + p.id, analyticsName(p));
     // The product may load after the menu was set; keep Shop / Fragrance in sync.
     if(productViewVisible()){
       const navTab = p.category === 'FRG' ? 'fragrance' : 'shop';
@@ -2718,9 +2779,9 @@
             </div>` : ''}
           <button class="btn-lux pd-add" id="pdAddBtn" data-id="${escapeAttr(p.id)}" data-color="${escapeAttr(selectedLabel)}" ${p.stock <= 0 ? 'disabled' : ''}>${p.stock <= 0 ? dict.sold_out : dict.add_bag}</button>
           <div class="pd-actions">
-            <a class="text-link" href="https://wa.me/9647501864144?text=${askText}" target="_blank" rel="noopener">${dict.pd_ask}</a>
+            <a class="text-link" href="https://wa.me/9647501864144?text=${askText}" target="_blank" rel="noopener" data-track="Ask about this piece">${dict.pd_ask}</a>
             <button type="button" class="text-link pd-share" id="pdShareBtn">${dict.pd_share}</button>
-            <a class="text-link pd-instagram" href="${escapeAttr(instagramFor(p))}" target="_blank" rel="noopener">
+            <a class="text-link pd-instagram" href="${escapeAttr(instagramFor(p))}" target="_blank" rel="noopener" data-track="Instagram click">
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor"/></svg>${dict.pd_instagram}</a>
           </div>
           <dl class="pd-details">
@@ -2741,8 +2802,12 @@
     });
     const addBtn = document.getElementById('pdAddBtn');
     if(addBtn) addBtn.addEventListener('click', () => addToCart(p.id, addBtn));
+    productDetailEl.querySelectorAll('[data-track]').forEach(a => {
+      a.addEventListener('click', () => trackEvent(a.dataset.track, { product: analyticsName(p), from: 'product page' }));
+    });
     const shareBtn = document.getElementById('pdShareBtn');
     if(shareBtn) shareBtn.addEventListener('click', async () => {
+      trackEvent('Share', { product: analyticsName(p) });
       const url = productUrl(p);
       try{
         if(navigator.share){ await navigator.share({ title: `${pName(p)} — ASIORA`, url }); return; }
@@ -2867,6 +2932,8 @@
 
     auth.onAuthStateChanged(user => {
       if(isAdmin(user)){
+        // Don't count the store owner's own visits on this device.
+        try{ localStorage.setItem('umami.disabled', '1'); }catch(e){}
         adminLoginEl.style.display = 'none';
         adminPanelEl.style.display = 'grid';
         renderAdminListingsInner();
@@ -3108,6 +3175,8 @@
       const navTab = tab === 'admin' ? 'shop' : (tab === 'product' ? productTabFor(currentProductId) : tab);
       const activeBtn = document.querySelector(`#tabsRow .tab-btn[data-subtab="${navTab}"]`);
       if(tab !== 'product') document.title = SITE_TITLE;
+      const PAGE_TITLES = { about:'About', shop:'Shop', fragrance:'Fragrance', orders:'Orders' };
+      if(PAGE_TITLES[tab]) trackPage('/' + tab, PAGE_TITLES[tab]);
       activeBtn?.classList.add('active');
       activeBtn?.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
       moveTabIndicator(activeBtn);
