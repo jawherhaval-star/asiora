@@ -141,7 +141,7 @@
   }
 
   *{margin:0;padding:0;box-sizing:border-box;}
-  html{ overflow-x:hidden; }
+  html{ overflow-x:hidden;overflow-x:clip; }
   body{
     background:var(--paper);
     color:var(--text);
@@ -149,7 +149,7 @@
     font-weight:400;
     -webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;
-    overflow-x:hidden;
+    overflow-x:hidden;overflow-x:clip;
   }
   ::selection{ background:var(--text); color:var(--paper); }
   img{max-width:100%;display:block;}
@@ -402,6 +402,125 @@
   }
   html[dir="rtl"] .page-hero{ text-align:right; }
 
+
+  /* ---------- five chapters ---------- */
+  .chapters{ position:relative;margin-inline:calc(50% - 50vw);margin-top:-40px; }
+  .ch-skip{ display:flex;justify-content:center;padding:0 24px 40px; }
+  .chapter{
+    position:relative;min-height:100svh;color:var(--text);
+    background:linear-gradient(var(--ch-prev) 0, var(--ch-bg) 38vh, var(--ch-bg) 100%);
+    scroll-margin-top:84px;
+  }
+  .chapter[data-tone="dark"]{
+    --text:var(--ivory);--text-2:#b7b2a8;--text-3:#8f8b84;--paper:var(--midnight);
+    --rule:rgba(243,238,229,0.12);--rule-strong:rgba(243,238,229,0.26);--gold-ink:var(--gold);
+  }
+  .ch-stage{
+    position:relative;min-height:100svh;overflow:hidden;
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,auto) minmax(0,1fr);
+    align-items:center;gap:clamp(24px,4vw,72px);
+    padding:clamp(48px,7vh,96px) clamp(24px,6vw,110px);
+  }
+  .ch-word{
+    position:absolute;inset:auto 0 50% 0;transform:translateY(50%) translateX(calc((var(--p,0.5) - 0.5) * -6vw));
+    text-align:center;white-space:nowrap;pointer-events:none;user-select:none;
+    font-family:var(--serif);font-style:italic;font-weight:300;line-height:.8;
+    font-size:clamp(120px,22vw,360px);color:var(--text);opacity:.06;
+  }
+  .ch-bottle{ position:relative;margin:0;justify-self:center;z-index:1; }
+  .ch-bottle img{
+    height:min(68vh,640px);width:auto;max-width:none;
+    filter:drop-shadow(0 40px 40px rgba(0,0,0,.18));
+    transition:transform 1.4s var(--ease-out), opacity 1.2s var(--ease-out);
+  }
+  .chapter[data-tone="dark"] .ch-bottle img{ filter:drop-shadow(0 40px 50px rgba(0,0,0,.55)); }
+  .chapter[data-key="pink"] .ch-bottle img{ height:min(60vh,560px); }
+  .ch-notes{ position:relative;z-index:1;display:flex;flex-direction:column;gap:36px;justify-self:end;max-width:300px; }
+  .ch-tier{ display:flex;flex-direction:column;gap:10px;padding-top:16px;border-top:1px solid var(--rule-strong);
+    transition:opacity .9s var(--ease-out), transform .9s var(--ease-out); }
+  .ch-tier-label{ display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-ink); }
+  .ch-tier-label svg{ width:16px;height:16px; }
+  .ch-tier-list{ font-family:var(--serif);font-size:clamp(20px,1.7vw,26px);line-height:1.3;color:var(--text); }
+  .ch-tier-list .dot{ color:var(--text-3); }
+  .ch-info{ position:relative;z-index:1;max-width:400px;display:flex;flex-direction:column;align-items:flex-start;gap:18px; }
+  .ch-info > *{ transition:opacity 1s var(--ease-out), transform 1s var(--ease-out); }
+  .ch-eyebrow{ display:flex;gap:14px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-ink); }
+  .ch-eyebrow-word{ color:var(--text-2); }
+  .ch-title{ font-family:var(--serif);font-weight:300;font-size:clamp(40px,4.4vw,68px);line-height:1;margin:0; }
+  .ch-line{ margin:0;color:var(--text-2);font-size:16px;line-height:1.65; }
+  .ch-price{ font-family:var(--serif);font-size:26px;letter-spacing:.02em; }
+  .ch-actions{ display:flex;flex-wrap:wrap;align-items:center;gap:22px 28px;margin-top:6px; }
+  .chapter[data-tone="dark"] .btn-lux{ border-color:var(--ivory); }
+  .ch-actions .text-link, .ch-skip .text-link{ background:none;border:0;border-bottom:1px solid var(--rule-strong);border-radius:0;font-family:var(--sans);cursor:pointer;padding:12px 0 6px; }
+  .ch-actions .text-link:hover, .ch-skip .text-link:hover{ border-bottom-color:var(--gold); }
+
+  /* hidden until the chapter's step reaches them */
+  .chapter .ch-tier, .chapter .ch-info > *{ opacity:0;transform:translateY(18px); }
+  .chapter .ch-bottle img{ opacity:0;transform:translateY(30px) scale(.97); }
+  .chapter[data-step="0"] .ch-bottle img, .chapter[data-step="1"] .ch-bottle img, .chapter[data-step="2"] .ch-bottle img,
+  .chapter[data-step="3"] .ch-bottle img, .chapter[data-step="4"] .ch-bottle img{ opacity:1;transform:none; }
+  .chapter[data-step="0"] .ch-info > :is(.ch-eyebrow,.ch-title),
+  .chapter[data-step="1"] .ch-info > :is(.ch-eyebrow,.ch-title),
+  .chapter[data-step="2"] .ch-info > :is(.ch-eyebrow,.ch-title),
+  .chapter[data-step="3"] .ch-info > :is(.ch-eyebrow,.ch-title),
+  .chapter[data-step="4"] .ch-info > *{ opacity:1;transform:none; }
+  .chapter[data-step="1"] [data-tier="top"],
+  .chapter[data-step="2"] :is([data-tier="top"],[data-tier="heart"]),
+  .chapter[data-step="3"] .ch-tier, .chapter[data-step="4"] .ch-tier{ opacity:1;transform:none; }
+  .chapter[data-step="4"] .ch-info > :nth-child(3){ transition-delay:.08s; }
+  .chapter[data-step="4"] .ch-info > :nth-child(4){ transition-delay:.16s; }
+  .chapter[data-step="4"] .ch-info > :nth-child(5){ transition-delay:.24s; }
+
+  /* chapter rail */
+  .ch-rail{
+    position:fixed;inset-inline-end:22px;top:50%;transform:translateY(-50%);z-index:30;
+    display:flex;flex-direction:column;gap:4px;opacity:0;pointer-events:none;transition:opacity .5s ease;
+  }
+  .ch-rail.show{ opacity:1;pointer-events:auto; }
+  .ch-rail button{
+    width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+    font-family:var(--serif);font-size:14px;color:var(--midnight);
+    background:rgba(243,238,229,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border:1px solid rgba(20,22,31,.12);transition:background .3s ease,color .3s ease;
+  }
+  .ch-rail button.active{ background:var(--midnight);color:var(--ivory);border-color:var(--midnight); }
+  .ch-rail button:focus-visible{ outline:2px solid var(--gold);outline-offset:2px; }
+
+  /* finale */
+  .chapters-finale{ margin-inline:calc(50% - 50vw);padding:clamp(80px,12vh,140px) 24px clamp(90px,12vh,140px);
+    background:linear-gradient(#F4DDE1 0, var(--paper) 42vh);text-align:center;margin-bottom:96px; }
+  .ch-finale-head h2{ font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(40px,5vw,72px);margin:0 0 14px; }
+  .ch-finale-head p{ margin:0 auto;color:var(--text-2);max-width:460px; }
+  .ch-finale-row{ display:flex;justify-content:center;flex-wrap:wrap;gap:clamp(12px,3vw,48px);margin-top:56px; }
+  .ch-finale-item{ display:flex;flex-direction:column;align-items:center;gap:16px;cursor:pointer;background:none;border:0;padding:0;color:var(--text); }
+  .ch-finale-img{ width:clamp(96px,11vw,150px);height:clamp(160px,18vw,250px);display:flex;align-items:center;justify-content:center;
+    background:var(--ch-bg);padding:18px 12px;border:1px solid var(--rule);transition:transform .6s var(--ease-out);overflow:hidden; }
+  .ch-finale-img img{ height:100%;width:auto;max-width:100%;object-fit:contain; }
+  .frag-index-head, .chapters-finale{ scroll-margin-top:110px; }
+  @media (max-width:560px){ .ch-finale-row{ gap:10px; } .ch-finale-img{ width:calc((100vw - 100px) / 3);height:auto;aspect-ratio:3/5; } }
+  .ch-finale-item:hover .ch-finale-img{ transform:translateY(-6px); }
+  .ch-finale-item:focus-visible{ outline:2px solid var(--gold);outline-offset:4px; }
+  .ch-finale-word{ font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-2); }
+  html[lang="ku"] :is(.ch-eyebrow,.ch-tier-label,.ch-finale-word), html[lang="ar"] :is(.ch-eyebrow,.ch-tier-label,.ch-finale-word){ letter-spacing:0;font-size:13px; }
+
+  /* wide screens: each chapter pins while the scent opens */
+  @media (min-width:901px) and (prefers-reduced-motion:no-preference){
+    .chapter{ height:230vh; }
+    .ch-stage{ position:sticky;top:84px;min-height:0;height:calc(100vh - 84px); }
+  }
+  @media (max-width:900px){
+    .ch-stage{ grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;gap:32px;padding:72px 22px 88px; }
+    .ch-bottle{ order:1; } .ch-info{ order:2;align-items:center; } .ch-notes{ order:3;justify-self:center;width:100%;max-width:420px; }
+    .ch-bottle img{ height:min(54svh,460px); }
+    .chapter[data-key="pink"] .ch-bottle img{ height:min(46svh,400px); }
+    .ch-word{ font-size:34vw; inset:72px 0 auto 0;transform:none; }
+    .ch-actions{ justify-content:center; }
+    .ch-tier{ align-items:center; }
+    .ch-rail{ display:none; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .chapter .ch-tier, .chapter .ch-info > *, .chapter .ch-bottle img{ opacity:1 !important;transform:none !important;transition:none !important; }
+  }
   /* ---------- fragrance showcase ---------- */
   .fragrance-section{ position:relative;padding:0 0 110px;margin-bottom:96px;border-bottom:1px solid var(--rule); }
   .frag-particles{ display:none; }
@@ -1333,25 +1452,8 @@
   </section>
 
     <section class="fragrance-section" id="fragranceSection">
-      <div class="frag-particles" aria-hidden="true"></div>
-      <div class="frag-grid">
-        <div class="frag-visual reveal">
-          <div class="bottle-glow" aria-hidden="true"></div>
-          <div class="bottle-stage">
-          <div class="bottle-3d" id="bottle3d" aria-hidden="true">
-            <div class="bottle-face front"><img class="bottle-photo" src="/images/kurdistan-bottle.webp" width="302" height="820" loading="lazy" decoding="async" alt="Kurdistan by Asiora fragrance bottle"></div>
-            <div class="bottle-face back"><img class="bottle-photo" src="/images/kurdistan-bottle.webp" width="302" height="820" loading="lazy" decoding="async" alt="" aria-hidden="true"></div>
-          </div>
-          <div class="bottle-shadow" aria-hidden="true"></div>
-          </div>
-        </div>
-        <div class="frag-copy reveal">
-          <div class="eyebrow" data-t="frag_index_eyebrow">The Collection</div>
-          <h2 data-t="frag_hero_eyebrow">The Fragrance Edit</h2>
-          <p data-t="frag_copy_p">A small collection of scents, formulated the same way we choose everything else — considered, unhurried, made to last. Rooted in the Kurdistan Edition and built to last on skin. Browse what's available below, or reach out to us directly for the full sample set.</p>
-          <button class="btn-lux" id="frag-cta" data-t="frag_cta" onclick="document.getElementById('fragranceGrid').scrollIntoView({behavior:'smooth',block:'start'})">Shop the Collection</button>
-        </div>
-      </div>
+      <div class="chapters" id="chapters"></div>
+      <div class="chapters-finale" id="chaptersFinale"></div>
       <div class="page-head reveal frag-index-head">
         <div>
           <div class="eyebrow" data-t="frag_index_eyebrow">The Collection</div>
@@ -1524,6 +1626,14 @@
             <div class="notes-input"><span>Top</span><input type="text" id="p-notes-top" placeholder="e.g. Bergamot, Pear, Pink Pepper"></div>
             <div class="notes-input"><span>Heart</span><input type="text" id="p-notes-heart" placeholder="e.g. Jasmine, Orange Blossom, Rose"></div>
             <div class="notes-input"><span>Base</span><input type="text" id="p-notes-base" placeholder="e.g. Vanilla, Amber, Sandalwood, Musk"></div>
+          </div>
+          <div class="field">
+            <label for="p-bottle">Chapter bottle (Fragrance page)</label>
+            <select id="p-bottle">
+              <option value="">Automatic (from notes)</option>
+              <option value="white">White</option><option value="black">Black</option><option value="silver">Silver</option>
+              <option value="red">Red</option><option value="pink">Pink</option>
+            </select>
           </div>
           <button type="submit" class="submit-btn" id="productSaveBtn">Save piece</button>
           <button type="button" class="submit-btn" id="productCancelBtn" style="display:none;background:none;border:1px solid var(--line-strong);color:var(--bone-dim);margin-top:8px;">Cancel edit</button>
@@ -1915,6 +2025,7 @@
       pd_payment_t: "Payment", pd_payment: "Pay on delivery. No account or card needed.",
       pd_related: "You may also like", pd_not_found: "This piece is no longer available.", pd_ask_msg: "Hi! I'm interested in",
       main_color_label: "Main", foot_storefront: "Storefront", foot_orders: "Your orders", shop_empty: "Nothing here yet.", no_photo: "No photo yet", img_unavailable: "Image unavailable", order_label: "Order", ph_phone: "e.g. 0750 000 0000",
+      ch_eyebrow: "Chapter", ch_skip: "Skip to all fragrances", ch_view: "View details", ch_rail: "Chapters", ch_finale_t: "Find your Kurdistan", ch_finale_p: "Five chapters, one origin. Choose yours.",
       notes_title: "Fragrance notes", notes_top: "Top", notes_heart: "Heart", notes_base: "Base",
       mq_1: "Erbil, Kurdistan", mq_2: "Considered, always", mq_3: "Made by hand", mq_4: "Rooted in the mountains"
     },
@@ -1962,6 +2073,7 @@
       pd_payment_t: "پارەدان", pd_payment: "پارەدان لە کاتی گەیاندن. پێویستت بە هەژمار یان کارت نییە.",
       pd_related: "لەوانەیە ئەمانەشت بەدڵ بێت", pd_not_found: "ئەم پارچەیە ئێستا بەردەست نییە.", pd_ask_msg: "سڵاو! حەزم لەمەیە",
       main_color_label: "سەرەکی", foot_storefront: "فرۆشگا", foot_orders: "داواکارییەکانت", shop_empty: "هێشتا هیچ شتێک لێرە نییە.", no_photo: "هێشتا وێنە نییە", img_unavailable: "وێنە بەردەست نییە", order_label: "داواکاری", ph_phone: "0750 000 0000",
+      ch_eyebrow: "بەشی", ch_skip: "بڕۆ بۆ هەموو بۆنەکان", ch_view: "بینینی وردەکاری", ch_rail: "بەشەکان", ch_finale_t: "کوردستانی خۆت بدۆزەرەوە", ch_finale_p: "پێنج بەش، یەک سەرچاوە. هی خۆت هەڵبژێرە.",
       notes_title: "نۆتەکانی بۆن", notes_top: "سەرەوە", notes_heart: "دڵ", notes_base: "بنەڕەت",
       mq_1: "هەولێر، کوردستان", mq_2: "هەمیشە بە وردی", mq_3: "دەستکرد", mq_4: "ڕەگی لە چیاکاندایە"
     },
@@ -2009,6 +2121,7 @@
       pd_payment_t: "الدفع", pd_payment: "الدفع عند الاستلام. لا حاجة لحساب أو بطاقة.",
       pd_related: "قد يعجبك أيضاً", pd_not_found: "هذه القطعة لم تعد متوفرة.", pd_ask_msg: "مرحباً! أنا مهتم بـ",
       main_color_label: "الأساسي", foot_storefront: "واجهة المتجر", foot_orders: "طلباتك", shop_empty: "لا شيء هنا بعد.", no_photo: "لا توجد صورة بعد", img_unavailable: "الصورة غير متوفرة", order_label: "الطلب", ph_phone: "0750 000 0000",
+      ch_eyebrow: "الفصل", ch_skip: "انتقل إلى كل العطور", ch_view: "عرض التفاصيل", ch_rail: "الفصول", ch_finale_t: "اعثر على كردستانك", ch_finale_p: "خمسة فصول، أصل واحد. اختر عطرك.",
       notes_title: "مكونات العطر", notes_top: "النفحات العليا", notes_heart: "نفحات القلب", notes_base: "النفحات الأساسية",
       mq_1: "أربيل، كردستان", mq_2: "بعناية، دائماً", mq_3: "صُنع يدوياً", mq_4: "جذورنا في الجبال"
     }
@@ -2260,6 +2373,16 @@
       'Cedarwood':'خشب الأرز','Mandarin':'يوسفي','Peach':'خوخ','Mountain Herbs':'أعشاب جبلية','Mountain Resin':'راتنج جبلي'
     }
   };
+  // The five Kurdistan by ASIORA bottles (notes from the posters). Shared by Admin and the Fragrance chapters.
+  const BOTTLE_PRESETS = {
+    white:  { top:['Bergamot','Pear','Pink Pepper'], heart:['Jasmine','Orange Blossom','Rose'], base:['Vanilla','Amber','Sandalwood','Musk'],
+              desc:'Where elegance meets essence. A fragrance inspired by the mountains of Kurdistan.' },
+    black:  { top:['Blood Orange','Black Pepper','Spices'], heart:['Lavender','Orange Blossom'], base:['Woods','Moss','Amber','Tonka Bean'],
+              desc:'A scent inspired by strength, heritage and timeless beauty.' },
+    silver: { top:['Green Leaves','Berry Blend'], heart:['Aquatic Florals'], base:['Cashmeran','Musk','Cedarwood'] },
+    pink:   { top:['Mandarin','Peach'], heart:['Mountain Herbs','Rose'], base:['Cashmeran','Mountain Resin','Sandalwood'] },
+    red:    { top:['Green Leaves','Berry Blend'], heart:['Aquatic Florals'], base:['Cashmeran','Musk','Cedarwood'] }
+  };
   function noteLabel(n){ return (NOTE_I18N[currentLang] && NOTE_I18N[currentLang][n]) || n; }
   function notesOf(p){
     const n = p && p.notes;
@@ -2388,6 +2511,166 @@
   }
 
   let shopRenderToken = 0;
+
+  // ================= FIVE CHAPTERS (Fragrance page) =================
+  // One full-screen chapter per bottle. On wide screens each chapter pins
+  // while the scent "opens": top, heart, then base notes, then the price.
+  const CHAPTERS = [
+    { key:'white',  img:'/images/chapter-white.webp',  w:417, h:1100, tone:'light', bg:'#F3EEE5',
+      word:{ en:'White', ku:'سپی', ar:'أبيض' },
+      line:{ en:'Bright and serene. Bergamot and jasmine resting on warm vanilla.', ku:'ڕوون و ئارام. بێرگاموت و یاسەمەن لەسەر ڤانیلای گەرم.', ar:'مشرق وهادئ. برغموت وياسمين على فانيليا دافئة.' } },
+    { key:'black',  img:'/images/chapter-black.webp',  w:427, h:1100, tone:'dark',  bg:'#111217',
+      word:{ en:'Black', ku:'ڕەش', ar:'أسود' },
+      line:{ en:'Deep and strong. Black pepper and spice over amber and woods.', ku:'قووڵ و بەهێز. بیبەری ڕەش و بەهارات لەسەر عەنبەر و دار.', ar:'عميق وقوي. فلفل أسود وتوابل فوق العنبر والأخشاب.' } },
+    { key:'silver', img:'/images/chapter-grey.webp',   w:420, h:1100, tone:'light', bg:'#DFE1E4',
+      word:{ en:'Silver', ku:'زیوی', ar:'فضي' },
+      line:{ en:'Cool and airy. Green leaves and berries over clean cedar.', ku:'فێنک و سووک. گەڵای سەوز و توو لەسەر داری سیدری پاک.', ar:'منعش وخفيف. أوراق خضراء وتوت فوق خشب الأرز النقي.' } },
+    { key:'red',    img:'/images/chapter-red.webp',    w:421, h:1100, tone:'dark',  bg:'#3E1216',
+      word:{ en:'Red', ku:'سوور', ar:'أحمر' },
+      line:{ en:'Vivid and alive. Berries and aquatic florals over soft musk.', ku:'زیندوو و ڕوون. توو و گوڵە ئاوییەکان لەسەر میسکی نەرم.', ar:'حيّ ونابض. توت وزهور مائية فوق مسك ناعم.' } },
+    { key:'pink',   img:'/images/chapter-pink.webp',   w:747, h:1100, tone:'light', bg:'#F4DDE1',
+      word:{ en:'Pink', ku:'پەمەیی', ar:'وردي' },
+      line:{ en:'Warm and joyful. Mandarin and peach with mountain herbs.', ku:'گەرم و دڵخۆش. لالەنگی و قۆخ لەگەڵ گیای چیا.', ar:'دافئ ومبهج. يوسفي وخوخ مع أعشاب جبلية.' } }
+  ];
+  const ROMAN = ['I','II','III','IV','V'];
+  const notesSig = n => ['top','heart','base'].map(k => ((n && n[k]) || []).map(x => String(x).trim().toLowerCase()).join(',')).join('|');
+
+  // Which store product is each bottle? A bottle chosen in Admin wins;
+  // otherwise the product is recognised from its notes.
+  function chapterProducts(){
+    const frag = allProducts().filter(p => p.category === 'FRG');
+    const used = new Set(), map = {};
+    CHAPTERS.forEach(ch => { const p = frag.find(x => x.bottle === ch.key && !used.has(x.id)); if(p){ map[ch.key] = p; used.add(p.id); } });
+    CHAPTERS.forEach(ch => {
+      if(map[ch.key]) return;
+      const sig = notesSig(BOTTLE_PRESETS[ch.key]);
+      const p = frag.find(x => !used.has(x.id) && !x.bottle && x.notes && notesSig(x.notes) === sig);
+      if(p){ map[ch.key] = p; used.add(p.id); }
+    });
+    return map;
+  }
+
+  const chaptersEl = document.getElementById('chapters');
+  const finaleEl = document.getElementById('chaptersFinale');
+  let chaptersSig = '';
+  function renderChapters(){
+    if(!chaptersEl) return;
+    const dict = T_DICT[currentLang];
+    const map = chapterProducts();
+    const sig = currentLang + '|' + CHAPTERS.map(ch => { const p = map[ch.key]; return p ? [p.id, p.price, p.stock, pName(p), pDesc(p), notesSig(p.notes)].join('~') : '-'; }).join('#');
+    if(sig === chaptersSig) return;
+    chaptersSig = sig;
+    const tierHtml = (key, list) => list.length ? `
+      <div class="ch-tier" data-tier="${key}">
+        <span class="ch-tier-label">${notesIcon(key)}${dict['notes_' + key]}</span>
+        <span class="ch-tier-list" dir="auto">${list.map(n => escapeHtml(noteLabel(n))).join('<span class="dot" aria-hidden="true"> · </span>')}</span>
+      </div>` : '';
+    chaptersEl.innerHTML = `
+      <div class="ch-skip"><button type="button" class="text-link" data-ch-skip>${dict.ch_skip}</button></div>
+      <nav class="ch-rail" aria-label="${escapeAttr(dict.ch_rail)}">
+        ${CHAPTERS.map((ch, i) => `<button type="button" data-ch-go="${i}" aria-label="${escapeAttr(dict.ch_eyebrow + ' ' + ROMAN[i] + ' — ' + ch.word[currentLang])}"><span>${ROMAN[i]}</span></button>`).join('')}
+      </nav>
+      ${CHAPTERS.map((ch, i) => {
+        const p = map[ch.key];
+        const notes = (p && p.notes) || BOTTLE_PRESETS[ch.key];
+        const word = ch.word[currentLang] || ch.word.en;
+        const prev = i === 0 ? 'var(--paper)' : CHAPTERS[i - 1].bg;
+        const name = p ? pName(p) : 'Kurdistan';
+        const line = (p && pDesc(p)) || ch.line[currentLang] || ch.line.en;
+        const soldOut = p && Number(p.stock) <= 0;
+        return `
+        <article class="chapter" id="chapter-${ch.key}" data-key="${ch.key}" data-tone="${ch.tone}" data-step="-1"
+                 style="--ch-bg:${ch.bg};--ch-prev:${prev}" aria-labelledby="ch-title-${ch.key}">
+          <div class="ch-stage">
+            <div class="ch-word" aria-hidden="true">${escapeHtml(word)}</div>
+            <div class="ch-notes">
+              ${tierHtml('top', notes.top || [])}${tierHtml('heart', notes.heart || [])}${tierHtml('base', notes.base || [])}
+            </div>
+            <figure class="ch-bottle">
+              <img src="${ch.img}" width="${ch.w}" height="${ch.h}" alt="${escapeAttr(name + ' — ' + word)}" ${i === 0 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
+            </figure>
+            <div class="ch-info">
+              <div class="ch-eyebrow"><span>${dict.ch_eyebrow} ${ROMAN[i]}</span><span class="ch-eyebrow-word">${escapeHtml(word)}</span></div>
+              <h2 class="ch-title" id="ch-title-${ch.key}" dir="auto">${escapeHtml(name)}</h2>
+              <p class="ch-line" dir="auto">${escapeHtml(line)}</p>
+              ${p ? `<div class="ch-price">${fmtIQD(p.price)}</div>
+              <div class="ch-actions">
+                <button class="btn-lux ch-add" data-id="${escapeAttr(p.id)}" data-color="" ${soldOut ? 'disabled' : ''}>${soldOut ? dict.sold_out : dict.add_bag}</button>
+                <button type="button" class="text-link" data-ch-view="${escapeAttr(p.id)}">${dict.ch_view}</button>
+              </div>` : `<div class="ch-actions"><a class="btn-lux" href="https://wa.me/9647501864144" target="_blank" rel="noopener" data-track="Ask about this piece">${dict.pd_ask}</a></div>`}
+            </div>
+          </div>
+        </article>`;
+      }).join('')}`;
+    if(finaleEl){
+      finaleEl.innerHTML = `
+        <div class="ch-finale-head">
+          <h2>${dict.ch_finale_t}</h2>
+          <p>${dict.ch_finale_p}</p>
+        </div>
+        <div class="ch-finale-row">
+          ${CHAPTERS.map((ch, i) => `
+            <button type="button" class="ch-finale-item" data-ch-go="${i}" style="--ch-bg:${ch.bg}">
+              <span class="ch-finale-img"><img src="${ch.img}" width="${ch.w}" height="${ch.h}" alt="" loading="lazy" decoding="async"></span>
+              <span class="ch-finale-word">${escapeHtml(ch.word[currentLang] || ch.word.en)}</span>
+            </button>`).join('')}
+        </div>`;
+    }
+    chaptersEl.querySelectorAll('.ch-add').forEach(btn => btn.addEventListener('click', () => addToCart(btn.dataset.id, btn)));
+    chaptersEl.querySelectorAll('[data-ch-view]').forEach(btn => btn.addEventListener('click', () => { location.hash = 'product/' + encodeURIComponent(btn.dataset.chView); }));
+    chaptersEl.querySelectorAll('[data-track]').forEach(a => a.addEventListener('click', () => trackEvent(a.dataset.track, { product: '-', from: 'chapter' })));
+    updateChapters();
+  }
+
+  // Chapter scroll state: which step each chapter is on, and which is active.
+  let chaptersTicking = false;
+  function updateChapters(){
+    chaptersTicking = false;
+    if(!chaptersEl || !chaptersEl.offsetParent) return;
+    const vh = window.innerHeight;
+    const cinematic = window.matchMedia('(min-width: 901px)').matches && !prefersReducedMotion;
+    const header = document.getElementById('siteHeader');
+    const headerH = header ? header.offsetHeight : 0;
+    let active = -1;
+    chaptersEl.querySelectorAll('.chapter').forEach((el, i) => {
+      const r = el.getBoundingClientRect();
+      let step;
+      if(prefersReducedMotion){ step = 4; }
+      else if(cinematic){
+        const stage = el.querySelector('.ch-stage');
+        const travel = Math.max(1, r.height - stage.offsetHeight);
+        const pr = Math.min(1, Math.max(0, (headerH - r.top) / travel));
+        el.style.setProperty('--p', pr.toFixed(3));
+        step = r.top > vh * 0.55 ? -1 : pr < 0.1 ? 0 : pr < 0.3 ? 1 : pr < 0.5 ? 2 : pr < 0.68 ? 3 : 4;
+      } else {
+        step = r.top < vh * 0.8 ? 4 : -1;
+      }
+      if(el.dataset.step !== String(step)) el.dataset.step = String(step);
+      if(r.top < vh * 0.5 && r.bottom > vh * 0.5) active = i;
+    });
+    const rail = chaptersEl.querySelector('.ch-rail');
+    if(rail){
+      const box = chaptersEl.getBoundingClientRect();
+      rail.classList.toggle('show', box.top < vh * 0.5 && box.bottom > vh * 0.5);
+      rail.querySelectorAll('button').forEach((b, i) => b.classList.toggle('active', i === active));
+    }
+  }
+  window.addEventListener('scroll', () => { if(!chaptersTicking){ chaptersTicking = true; requestAnimationFrame(updateChapters); } }, { passive:true });
+  window.addEventListener('resize', updateChapters);
+  window.addEventListener('hashchange', () => setTimeout(updateChapters, 260));
+  document.addEventListener('click', (e) => {
+    const go = e.target.closest('[data-ch-go]');
+    if(go && chaptersEl){
+      const target = chaptersEl.querySelectorAll('.chapter')[Number(go.dataset.chGo)];
+      if(target) target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+      return;
+    }
+    if(e.target.closest('[data-ch-skip]')){
+      const head = document.querySelector('.frag-index-head');
+      if(head) head.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+    }
+  });
+
   function renderShop(){
     if(grid){
       const items = allProducts().filter(p => {
@@ -2412,6 +2695,7 @@
       if(prefersReducedMotion || !grid.children.length){ applyContent(); }
       else { grid.classList.add('swapping'); setTimeout(() => { if(token === shopRenderToken) applyContent(); }, 160); }
     }
+    renderChapters();
     if(fragGrid){
       const fragItems = allProducts().filter(p => p.category === 'FRG' && (!searchQuery || productText(p).includes(searchQuery)));
       if(fragItems.length === 0){
@@ -2994,15 +3278,7 @@
     });
 
     // Notes from the Kurdistan by ASIORA posters, one per bottle.
-    const NOTES_PRESETS = {
-      white:  { top:['Bergamot','Pear','Pink Pepper'], heart:['Jasmine','Orange Blossom','Rose'], base:['Vanilla','Amber','Sandalwood','Musk'],
-                desc:'Where elegance meets essence. A fragrance inspired by the mountains of Kurdistan.' },
-      black:  { top:['Blood Orange','Black Pepper','Spices'], heart:['Lavender','Orange Blossom'], base:['Woods','Moss','Amber','Tonka Bean'],
-                desc:'A scent inspired by strength, heritage and timeless beauty.' },
-      silver: { top:['Green Leaves','Berry Blend'], heart:['Aquatic Florals'], base:['Cashmeran','Musk','Cedarwood'] },
-      pink:   { top:['Mandarin','Peach'], heart:['Mountain Herbs','Rose'], base:['Cashmeran','Mountain Resin','Sandalwood'] },
-      red:    { top:['Green Leaves','Berry Blend'], heart:['Aquatic Florals'], base:['Cashmeran','Musk','Cedarwood'] }
-    };
+    const NOTES_PRESETS = BOTTLE_PRESETS;
     const splitNotes = s => s.split(',').map(x => x.trim()).filter(Boolean);
     function setNotesInForm(notes){
       const n = notes || {};
@@ -3022,6 +3298,7 @@
         const preset = NOTES_PRESETS[btn.dataset.notesPreset];
         if(!preset) return;
         setNotesInForm(preset);
+        document.getElementById('p-bottle').value = btn.dataset.notesPreset;
         const descEl = document.getElementById('p-desc');
         if(preset.desc && !descEl.value.trim()) descEl.value = preset.desc;
         document.getElementById('p-category').value = 'FRG';
@@ -3039,6 +3316,7 @@
       categorySelect.selectedIndex = 0;
       setColorsInForm([]);
       setNotesInForm(null);
+      document.getElementById('p-bottle').value = '';
     }
     document.getElementById('productCancelBtn').addEventListener('click', resetProductForm);
 
@@ -3061,6 +3339,7 @@
       imagePreview.innerHTML = p.image ? `<img src="${escapeAttr(p.image)}" onerror="this.parentElement.innerHTML='<span>Could not load image</span>'">` : `<span>Image preview</span>`;
       setColorsInForm(p.colors || []);
       setNotesInForm(p.notes);
+      document.getElementById('p-bottle').value = p.bottle || '';
       document.getElementById('adminFormTitle').textContent = 'Edit piece';
       document.getElementById('productSaveBtn').textContent = 'Save changes';
       document.getElementById('productCancelBtn').style.display = 'block';
@@ -3083,7 +3362,8 @@
         desc_ku: document.getElementById('p-desc-ku').value.trim(),
         desc_ar: document.getElementById('p-desc-ar').value.trim(),
         colors: getColorsFromForm(),
-        notes: getNotesFromForm()
+        notes: getNotesFromForm(),
+        bottle: document.getElementById('p-bottle').value
       };
       if(data.instagram && !/^https:\/\/(www\.)?instagram\.com\//i.test(data.instagram)){
         productFormMsg.textContent = 'The Instagram link should start with https://www.instagram.com/';
