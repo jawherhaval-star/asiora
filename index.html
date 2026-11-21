@@ -3538,8 +3538,9 @@
 
     // Always land on the About tab on initial load/refresh, regardless of
     // whatever hash is already in the URL (bookmark, browser autofill, etc.)
-    // Exception: shared product links (#product/<id>) open that product.
-    if(routeProductId()){
+    // Exceptions: shared product links (#product/<id>) open that product,
+    // and #admin opens the Admin page so the owner can sign in.
+    if(routeProductId() || window.location.hash === '#admin'){
       checkHashRoute();
     } else {
       if(window.location.hash !== '#about'){
