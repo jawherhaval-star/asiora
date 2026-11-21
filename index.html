@@ -997,8 +997,10 @@
   /* fragrance in its bottle colour */
   .pd-hero{
     position:relative;color:var(--text);margin:-40px calc(50% - 50vw) 0;
-    padding:44px max(48px, calc((100vw - 1320px) / 2 + 48px)) 120px;
-    background:linear-gradient(var(--ch-bg) 0, var(--ch-bg) calc(100% - 140px), var(--paper) 100%);
+    padding:44px max(48px, calc((100vw - 1320px) / 2 + 48px)) 200px;
+    background:linear-gradient(var(--ch-bg) 0, var(--ch-bg) calc(100% - 170px), var(--ivory) 100%);
+  }
+  .pd-hero + .pd-related{ margin-top:20px;
   }
   .pd-hero .pd-gallery{ position:relative; }
   .pd-word{
@@ -1016,7 +1018,7 @@
   .pd-hero .pd-back:hover{ color:var(--text); }
   .pd-hero .pd-stock{ color:var(--text-3); }
   @media (max-width:900px){
-    .pd-hero{ padding:28px 16px 96px; }
+    .pd-hero{ padding:28px 16px 190px; }
     .pd-hero .pd-main.pd-cutout{ margin:0;height:min(58svh,520px); }
     .pd-word{ font-size:34vw; }
   }
@@ -2534,6 +2536,12 @@
       line:{ en:'Warm and joyful. Mandarin and peach with mountain herbs.', ku:'گەرم و دڵخۆش. لالەنگی و قۆخ لەگەڵ گیای چیا.', ar:'دافئ ومبهج. يوسفي وخوخ مع أعشاب جبلية.' } }
   ];
   const ROMAN = ['I','II','III','IV','V'];
+  // A fragrance's description in the current language. When Kurdish or Arabic
+  // hasn't been written in Admin yet, the bottle's own line is used instead of English.
+  function chapterDesc(p, ch){
+    const own = p && currentLang !== 'en' ? p['desc_' + currentLang] : (p && p.desc);
+    return own || (ch && (ch.line[currentLang] || ch.line.en)) || pDesc(p);
+  }
   const notesSig = n => ['top','heart','base'].map(k => ((n && n[k]) || []).map(x => String(x).trim().toLowerCase()).join(',')).join('|');
 
   // Which store product is each bottle? A bottle chosen in Admin wins;
@@ -2577,7 +2585,7 @@
         const word = ch.word[currentLang] || ch.word.en;
         const prev = i === 0 ? 'var(--paper)' : CHAPTERS[i - 1].bg;
         const name = p ? pName(p) : 'Kurdistan';
-        const line = (p && pDesc(p)) || ch.line[currentLang] || ch.line.en;
+        const line = chapterDesc(p, ch);
         const soldOut = p && Number(p.stock) <= 0;
         return `
         <article class="chapter" id="chapter-${ch.key}" data-key="${ch.key}" data-tone="${ch.tone}" data-step="-1"
@@ -3104,7 +3112,7 @@
           <h1 class="pd-name" dir="auto">${escapeHtml(pName(p))}</h1>
           <div class="pd-price">${fmtIQD(p.price)}</div>
           <div class="pd-stock${isLow ? ' is-low' : ''}${p.stock <= 0 ? ' is-out' : ''}">${stockLabel}</div>
-          ${pDesc(p) ? `<p class="pd-desc" dir="auto">${escapeHtml(pDesc(p))}</p>` : ''}
+          ${(ch ? chapterDesc(p, ch) : pDesc(p)) ? `<p class="pd-desc" dir="auto">${escapeHtml(ch ? chapterDesc(p, ch) : pDesc(p))}</p>` : ''}
           ${buildNotesBlock(p)}
           ${colors.length ? `
             <div class="pd-colors">
