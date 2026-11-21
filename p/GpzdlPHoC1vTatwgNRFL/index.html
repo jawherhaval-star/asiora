@@ -411,7 +411,7 @@
     background:linear-gradient(var(--ch-prev) 0, var(--ch-bg) 38vh, var(--ch-bg) 100%);
     scroll-margin-top:84px;
   }
-  .chapter[data-tone="dark"]{
+  .chapter[data-tone="dark"], .pd-hero[data-tone="dark"]{
     --text:var(--ivory);--text-2:#b7b2a8;--text-3:#8f8b84;--paper:var(--midnight);
     --rule:rgba(243,238,229,0.12);--rule-strong:rgba(243,238,229,0.26);--gold-ink:var(--gold);
   }
@@ -450,7 +450,7 @@
   .ch-line{ margin:0;color:var(--text-2);font-size:16px;line-height:1.65; }
   .ch-price{ font-family:var(--serif);font-size:26px;letter-spacing:.02em; }
   .ch-actions{ display:flex;flex-wrap:wrap;align-items:center;gap:22px 28px;margin-top:6px; }
-  .chapter[data-tone="dark"] .btn-lux{ border-color:var(--ivory); }
+  :is(.chapter,.pd-hero)[data-tone="dark"] .btn-lux{ border-color:var(--ivory); }
   .ch-actions .text-link, .ch-skip .text-link{ background:none;border:0;border-bottom:1px solid var(--rule-strong);border-radius:0;font-family:var(--sans);cursor:pointer;padding:12px 0 6px; }
   .ch-actions .text-link:hover, .ch-skip .text-link:hover{ border-bottom-color:var(--gold); }
 
@@ -1020,6 +1020,33 @@
   }
   .pd-main img{ width:100%;height:100%;object-fit:cover;cursor:zoom-in;animation:pdImgIn .7s var(--ease-out) both; }
   @keyframes pdImgIn{ from{ opacity:0; } to{ opacity:1; } }
+  /* fragrance in its bottle colour */
+  .pd-hero{
+    position:relative;color:var(--text);margin:-40px calc(50% - 50vw) 0;
+    padding:44px max(48px, calc((100vw - 1320px) / 2 + 48px)) 120px;
+    background:linear-gradient(var(--ch-bg) 0, var(--ch-bg) calc(100% - 140px), var(--paper) 100%);
+  }
+  .pd-hero .pd-gallery{ position:relative; }
+  .pd-word{
+    position:absolute;inset:50% 0 auto 0;transform:translateY(-50%);text-align:center;white-space:nowrap;
+    pointer-events:none;user-select:none;font-family:var(--serif);font-style:italic;font-weight:300;line-height:.8;
+    font-size:clamp(110px,17vw,280px);color:var(--text);opacity:.07;animation:pdWordIn 1.4s var(--ease-out) both;
+  }
+  @keyframes pdWordIn{ from{ opacity:0; } to{ opacity:.07; } }
+  .pd-main.pd-cutout{ position:relative;aspect-ratio:auto;background:none;overflow:visible;height:min(74vh,700px);padding:20px 0; }
+  .pd-main.pd-cutout img{ width:auto;height:100%;object-fit:contain;filter:drop-shadow(0 40px 40px rgba(0,0,0,.18));animation:pdBottleIn 1.1s var(--ease-out) both; }
+  .pd-hero[data-tone="dark"] .pd-main.pd-cutout img{ filter:drop-shadow(0 40px 50px rgba(0,0,0,.55)); }
+  .pd-hero[data-key="pink"] .pd-main.pd-cutout img{ height:88%; }
+  @keyframes pdBottleIn{ from{ opacity:0;transform:translateY(26px) scale(.97); } to{ opacity:1;transform:none; } }
+  .pd-hero .pd-back{ color:var(--text-2); }
+  .pd-hero .pd-back:hover{ color:var(--text); }
+  .pd-hero .pd-stock{ color:var(--text-3); }
+  @media (max-width:900px){
+    .pd-hero{ padding:28px 16px 96px; }
+    .pd-hero .pd-main.pd-cutout{ margin:0;height:min(58svh,520px); }
+    .pd-word{ font-size:34vw; }
+  }
+  @media (prefers-reduced-motion:reduce){ .pd-word, .pd-main.pd-cutout img{ animation:none; } }
   .pd-main .ph{ font-family:var(--serif);font-style:italic;font-size:18px;color:var(--text-3); }
   .pd-info{ position:sticky;top:120px;padding-top:8px; }
   .pd-name{
@@ -3079,17 +3106,23 @@
       : dict.sold_out;
     const catLabel = typeof CAT_LABELS[p.category] === 'function' ? CAT_LABELS[p.category]() : p.category;
     const askText = encodeURIComponent(`${dict.pd_ask_msg}: ${p.name}${selectedLabel ? ' (' + selectedLabel + ')' : ''} — ${productUrl(p)}`);
+    // Fragrances wear their bottle's colour, like their chapter.
+    const chMap = p.category === 'FRG' ? chapterProducts() : {};
+    const ch = CHAPTERS.find(c => chMap[c.key] && chMap[c.key].id === p.id);
+    const chWord = ch ? (ch.word[currentLang] || ch.word.en) : '';
     const related = allProducts()
       .filter(x => x.id !== p.id && x.category === p.category)
       .concat(allProducts().filter(x => x.id !== p.id && x.category !== p.category && (x.category === 'FRG') === (p.category === 'FRG')))
       .slice(0, 4);
 
     productDetailEl.innerHTML = `
+      ${ch ? `<div class="pd-hero" data-key="${ch.key}" data-tone="${ch.tone}" style="--ch-bg:${ch.bg}">` : ''}
       ${back}
       <div class="pd-grid">
         <div class="pd-gallery">
-          <div class="pd-main">
-            ${mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(pName(p))}${selectedLabel ? ' — ' + escapeAttr(selectedLabel) : ''}">` : `<span class="ph">${T_DICT[currentLang].no_photo}</span>`}
+          ${ch ? `<div class="pd-word" aria-hidden="true">${escapeHtml(chWord)}</div>` : ''}
+          <div class="pd-main${ch ? ' pd-cutout' : ''}">
+            ${ch ? `<img src="${ch.img}" width="${ch.w}" height="${ch.h}" alt="${escapeAttr(pName(p) + ' — ' + chWord)}" fetchpriority="high">` : mainImage ? `<img src="${escapeAttr(mainImage)}" alt="${escapeAttr(pName(p))}${selectedLabel ? ' — ' + escapeAttr(selectedLabel) : ''}">` : `<span class="ph">${T_DICT[currentLang].no_photo}</span>`}
           </div>
         </div>
         <div class="pd-info">
@@ -3122,6 +3155,7 @@
           </dl>
         </div>
       </div>
+      ${ch ? '</div>' : ''}
       ${related.length ? `
         <section class="pd-related">
           <div class="page-head"><div><div class="eyebrow">ASIORA</div><h2>${dict.pd_related}</h2></div></div>
