@@ -403,6 +403,85 @@
   html[dir="rtl"] .page-hero{ text-align:right; }
 
 
+
+  /* ---------- About: cinematic opening ---------- */
+  .about-hero{
+    --text:var(--ivory);--text-2:rgba(243,238,229,.82);--text-3:rgba(243,238,229,.6);--gold-ink:var(--gold);
+    --rule:rgba(243,238,229,.14);--rule-strong:rgba(243,238,229,.3);
+    position:relative;margin:0 calc(50% - 50vw);min-height:calc(100svh - 84px);
+    display:flex;align-items:flex-end;overflow:hidden;background:var(--midnight);color:var(--text);isolation:isolate;
+  }
+  .about-hero-bg{ position:absolute;inset:0;z-index:-1; }
+  .about-hero-bg img{ width:100%;height:100%;max-width:none;object-fit:cover;object-position:62% 50%;
+    animation:aboutDrift 26s cubic-bezier(.2,.6,.2,1) both; }
+  @keyframes aboutDrift{ from{ transform:scale(1.14); } to{ transform:scale(1.02); } }
+  .about-hero-bg::after{ content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg, rgba(14,15,22,.9) 0%, rgba(14,15,22,.62) 42%, rgba(14,15,22,.12) 78%),
+               linear-gradient(0deg, rgba(14,15,22,.75) 0%, rgba(14,15,22,0) 45%); }
+  html[dir="rtl"] .about-hero-bg::after{ background:linear-gradient(270deg, rgba(14,15,22,.9) 0%, rgba(14,15,22,.62) 42%, rgba(14,15,22,.12) 78%),
+               linear-gradient(0deg, rgba(14,15,22,.75) 0%, rgba(14,15,22,0) 45%); }
+  html[dir="rtl"] .about-hero-bg img{ object-position:38% 50%; }
+  .about-hero .about-hero-inner{ position:relative;width:100%;max-width:1320px;margin:0 auto;padding:120px 48px clamp(72px,12vh,128px); }
+  .about-hero .page-hero h1, .about-hero h1{ margin-bottom:34px; }
+  .about-hero h1 .gold-text{
+    background-image:linear-gradient(110deg, var(--gold) 0%, var(--gold) 40%, #F1E2BC 50%, var(--gold) 60%, var(--gold) 100%);
+  }
+  .about-hero p{ text-shadow:0 1px 18px rgba(0,0,0,.35); }
+  .about-scroll{ position:absolute;inset-inline-end:48px;bottom:48px;width:1px;height:64px;background:rgba(243,238,229,.22);overflow:hidden; }
+  .about-scroll::after{ content:"";position:absolute;inset:0;background:var(--gold);transform:translateY(-100%);animation:aboutScroll 2.6s cubic-bezier(.6,0,.3,1) infinite; }
+  @keyframes aboutScroll{ 0%{ transform:translateY(-100%); } 60%,100%{ transform:translateY(100%); } }
+  #about-view > .about-hero + .story-section{ border-top:0; }
+
+  /* chapter numerals on the story */
+  .story-num{ font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(56px,6vw,88px);line-height:.9;color:var(--gold-ink);opacity:.55;margin-bottom:18px; }
+
+  /* ---------- About: the Kurdistan Edition ---------- */
+  .edition-section{ padding:120px 0 110px;border-top:1px solid var(--rule);text-align:center; }
+  .edition-head{ max-width:620px;margin:0 auto; }
+  .edition-head .eyebrow{ justify-content:center;margin-bottom:20px; }
+  .edition-head h2{ font-family:var(--serif);font-weight:300;font-size:clamp(38px,5vw,68px);line-height:1.02;letter-spacing:-0.01em;margin-bottom:22px; }
+  .edition-head p{ color:var(--text-2);font-size:16px;line-height:1.85;font-weight:300; }
+  .edition-row{ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(10px,2vw,28px);margin:64px auto 56px;max-width:1080px; }
+  .edition-item{ display:flex;flex-direction:column;align-items:center;gap:14px;background:none;border:0;padding:0;cursor:pointer;color:var(--text);font:inherit; }
+  .edition-img{ position:relative;width:100%;aspect-ratio:3/4.4;display:flex;align-items:flex-end;justify-content:center;
+    background:var(--ch-bg);padding:12% 10% 9%;overflow:hidden;
+    transition:transform .7s var(--ease-out), box-shadow .7s var(--ease-out); }
+  .edition-item[data-key="white"] .edition-img{ box-shadow:inset 0 0 0 1px var(--rule); }
+  .edition-img img{ height:100%;width:auto;max-width:100%;object-fit:contain;filter:drop-shadow(0 18px 18px rgba(0,0,0,.2));
+    transition:transform .9s var(--ease-out); }
+  .edition-item[data-key="pink"] .edition-img img{ height:90%; }
+  .edition-item:hover .edition-img{ transform:translateY(-8px);box-shadow:0 26px 50px -26px rgba(20,22,31,.45); }
+  .edition-item:hover .edition-img img{ transform:scale(1.04); }
+  .edition-item:focus-visible{ outline:2px solid var(--gold);outline-offset:6px; }
+  .edition-num{ font-family:var(--serif);font-style:italic;font-size:18px;color:var(--gold-ink);line-height:1; }
+  .edition-word{ font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-2); }
+  html[lang="ku"] .edition-word, html[lang="ar"] .edition-word{ letter-spacing:0;font-size:13px; }
+  .edition-cta{ display:flex;justify-content:center; }
+  /* bottles rise in one after another */
+  .edition-section .edition-item{ opacity:0;transform:translateY(28px);transition:opacity 1s var(--ease-out), transform 1s var(--ease-out);transition-delay:calc(var(--i) * 110ms); }
+  .edition-section.in-view .edition-item{ opacity:1;transform:none; }
+
+  @media (max-width:900px){
+    .about-hero{ min-height:calc(92svh - 120px); }
+    .about-hero .about-hero-inner{ padding:96px 22px 64px; }
+    .about-hero-bg img{ object-position:70% 50%; }
+    html[dir="rtl"] .about-hero-bg img{ object-position:30% 50%; }
+    .about-hero-bg::after{ background:linear-gradient(0deg, rgba(14,15,22,.92) 0%, rgba(14,15,22,.7) 45%, rgba(14,15,22,.25) 100%); }
+    html[dir="rtl"] .about-hero-bg::after{ background:linear-gradient(0deg, rgba(14,15,22,.92) 0%, rgba(14,15,22,.7) 45%, rgba(14,15,22,.25) 100%); }
+    .about-scroll{ display:none; }
+    .edition-section{ padding:88px 0 80px; }
+    .edition-row{ grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 12px;margin:44px auto 44px; }
+    .edition-row > :nth-child(4){ grid-column:1 / span 1;margin-inline-start:50%; }
+    .edition-row > :nth-child(4), .edition-row > :nth-child(5){ width:100%; }
+    .edition-row{ grid-template-columns:repeat(6,minmax(0,1fr)); }
+    .edition-row > *{ grid-column:span 2; }
+    .edition-row > :nth-child(4){ grid-column:2 / span 2;margin-inline-start:0; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .about-hero-bg img, .about-scroll::after{ animation:none; }
+    .edition-section .edition-item{ opacity:1;transform:none;transition:none; }
+  }
+
   /* ---------- five chapters ---------- */
   .chapters{ position:relative;margin-inline:calc(50% - 50vw);margin-top:-40px; }
   .ch-skip{ display:flex;justify-content:center;padding:0 24px 40px; }
@@ -927,7 +1006,8 @@
   html[dir="rtl"] .contact-card{ padding:40px 0 40px 40px;border-right:none;border-left:1px solid var(--rule);margin-right:0;margin-left:40px; }
   html[dir="rtl"] .contact-card:last-child{ border-left:none;margin-left:0; }
   a.contact-card:hover h3{ font-style:italic; }
-  .contact-card .c-icon{ display:none; }
+  .contact-card .c-icon{ display:block;width:26px;height:26px;color:var(--gold-ink);margin-bottom:22px; }
+  .contact-card .c-icon svg{ width:100%;height:100%;display:block; }
   .contact-card h3{ font-family:var(--serif);font-weight:400;font-size:28px;margin-bottom:12px; }
   .contact-card p{ color:var(--text-2);font-size:14.5px;line-height:1.75;font-weight:300; }
   .contact-card .c-link{
@@ -1371,19 +1451,26 @@
 
   <section id="about-view" style="display:none;">
 
-  <section class="page-hero">
+  <section class="about-hero">
+    <div class="about-hero-bg" aria-hidden="true">
+      <img src="/images/about-mountains.webp" width="1400" height="787" alt="" fetchpriority="high" decoding="async">
+    </div>
+    <div class="page-hero about-hero-inner">
     <div class="eyebrow reveal" data-t="about_eyebrow">Erbil, Kurdistan</div>
     <h1 class="reveal"><span data-t="about_h1_l1">A house built</span><br><span class="gold-text" style="font-style:italic;" data-t="about_h1_l2">on restraint.</span></h1>
     <p class="reveal" data-t="about_intro">ASIORA is a considered clothing, objects, and fragrance house — founded in Erbil and shaped by Kurdish heritage. Every piece is handmade, not accumulated. Every scent is unhurried, made to last.</p>
     <div class="live-badge reveal" id="liveBadge" aria-hidden="true"></div>
+    </div>
+    <span class="about-scroll" aria-hidden="true"></span>
   </section>
 
   <section class="story-section reveal">
     <div class="story-grid">
       <div class="story-media" data-parallax>
-        <img src="/images/about-mountains.webp" width="1400" height="787" loading="lazy" decoding="async" alt="Snow-capped Kurdistan mountain peak under a full moon">
+        <img src="/images/about-jamadani.webp" width="1120" height="1400" loading="lazy" decoding="async" alt="Kurdistan by ASIORA in pink, crowned with a woven Kurdish Jamadani and gold coins">
       </div>
       <div class="story-copy">
+        <div class="story-num" aria-hidden="true">I</div>
         <div class="eyebrow" data-t="about_origin_eyebrow">Our Origin</div>
         <h2 data-t="about_origin_h2">Rooted in the Kurdistan mountains</h2>
         <p data-t="about_origin_p1">ASIORA began with a simple conviction: that clothing and fragrance should carry the weight of a place, not just a trend. The name, the palette, the motifs — all of it draws from Kurdish identity, from the folklore of the Kurdistan mountains, and from the mountain silhouettes that shape our region's skyline.</p>
@@ -1398,12 +1485,24 @@
         <img src="/images/about-citadel.webp" width="1400" height="727" loading="lazy" decoding="async" alt="Erbil Citadel illuminated at night">
       </div>
       <div class="story-copy">
+        <div class="story-num" aria-hidden="true">II</div>
         <div class="eyebrow" data-t="about_craft_eyebrow">The Craft</div>
         <h2 data-t="about_craft_h2">Made slowly, on purpose</h2>
         <p data-t="about_craft_p1">We work in small batches — fabrics, hardware, and glass sourced with care, not convenience. Our fragrance line, including the Kurdistan Edition, is packaged in frosted glass with mountain-facet engraving and a woven Kurdish Jamadani, produced to match the same standard as everything else we make.</p>
         <p data-t="about_craft_p2">Nothing ships until it looks and feels the way it was meant to. That's the whole philosophy: considered, always.</p>
       </div>
     </div>
+  </section>
+
+  <section class="edition-section reveal" aria-labelledby="edTitle">
+    <div class="edition-head">
+      <div class="story-num" aria-hidden="true">III</div>
+      <div class="eyebrow" data-t="ed_eyebrow">The Kurdistan Edition</div>
+      <h2 id="edTitle" data-t="ed_h2">Five bottles, one origin.</h2>
+      <p data-t="ed_p">Each wears a hand-woven Jamadani and a colour of its own, from bright White to deep Black. Find the one that feels like yours.</p>
+    </div>
+    <div class="edition-row" id="editionRow"></div>
+    <div class="edition-cta"><button type="button" class="btn-lux" data-edition-go="0" data-t="ed_cta">Discover the five chapters</button></div>
   </section>
 
   <section class="values-section reveal">
@@ -1452,19 +1551,19 @@
     </div>
     <div class="contact-grid">
       <a class="contact-card" href="https://wa.me/9647501864144" target="_blank" rel="noopener">
-        <div class="c-icon">✆</div>
+        <div class="c-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M9.2 8.6c.2-.5.5-.5.8-.5h.5c.2 0 .4.1.5.4l.6 1.5c.1.2 0 .5-.1.6l-.5.6c.5 1 1.3 1.8 2.3 2.3l.6-.5c.2-.2.4-.2.6-.1l1.5.6c.3.1.4.3.4.5v.5c0 .3 0 .6-.5.8-.6.3-1.6.4-3.4-.6a8.7 8.7 0 0 1-2.8-2.8c-1-1.8-.9-2.8-.5-3.4z" fill="currentColor"/></svg></div>
         <h3 data-t="about_wa_title">WhatsApp</h3>
         <p data-t="about_wa_body">The fastest way to reach us — for orders, sizing questions, or fragrance samples.</p>
         <span class="c-link" data-t="about_wa_link">Message us →</span>
       </a>
       <a class="contact-card" href="https://www.instagram.com/asioraofficial" target="_blank" rel="noopener">
-        <div class="c-icon">◎</div>
+        <div class="c-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor"/></svg></div>
         <h3 data-t="about_ig_title">Instagram</h3>
         <p data-t="about_ig_body">Follow along for new drops, campaign films, and behind-the-scenes from Erbil.</p>
         <span class="c-link">@asioraofficial →</span>
       </a>
       <div class="contact-card">
-        <div class="c-icon">⌂</div>
+        <div class="c-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><circle cx="12" cy="9.8" r="2.3" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></div>
         <h3 data-t="about_loc_title">Location</h3>
         <p data-t="about_loc_body">Erbil, Kurdistan Region, Iraq. Shipping nationwide, with orders confirmed and arranged directly with you.</p>
       </div>
@@ -2016,7 +2115,7 @@
       frag_index_eyebrow: "The Collection", frag_index_title: "All fragrances", frag_index_desc: "Every scent currently available.",
       search_placeholder: "Search pieces…", frag_search_placeholder: "Search fragrances…",
       shop_hero_eyebrow: "The Autumn Edit", shop_hero_h1_l1: "Considered,", shop_hero_h1_l2: "always.", shop_hero_sub: "Clothing and objects, edited with restraint.",
-      about_eyebrow: "Erbil, Kurdistan", about_h1_l1: "A house built", about_h1_l2: "on restraint.",
+      about_eyebrow: "Erbil, Kurdistan", ed_eyebrow: "The Kurdistan Edition", ed_h2: "Five bottles, one origin.", ed_p: "Each wears a hand-woven Jamadani and a colour of its own, from bright White to deep Black. Find the one that feels like yours.", ed_cta: "Discover the five chapters", about_h1_l1: "A house built", about_h1_l2: "on restraint.",
       about_intro: "ASIORA is a considered clothing, objects, and fragrance house — founded in Erbil and shaped by Kurdish heritage. Every piece is handmade, not accumulated. Every scent is unhurried, made to last.",
       about_origin_eyebrow: "Our Origin", about_origin_h2: "Rooted in the Kurdistan mountains",
       about_origin_p1: "ASIORA began with a simple conviction: that clothing and fragrance should carry the weight of a place, not just a trend. The name, the palette, the motifs — all of it draws from Kurdish identity, from the folklore of the Kurdistan mountains, and from the mountain silhouettes that shape our region's skyline.",
@@ -2064,7 +2163,7 @@
       frag_index_eyebrow: "کۆمەڵە", frag_index_title: "هەموو بۆنەکان", frag_index_desc: "هەموو ئەو بۆنانەی لە ئێستادا بەردەستن.",
       search_placeholder: "گەڕان بۆ پارچەکان…", frag_search_placeholder: "گەڕان بۆ بۆنەکان…",
       shop_hero_eyebrow: "هەڵبژاردەی پاییز", shop_hero_h1_l1: "بە وردی،", shop_hero_h1_l2: "هەمیشە.", shop_hero_sub: "جلوبەرگ و کەلوپەل، بە وردی دەستکاریکراوە.",
-      about_eyebrow: "هەولێر، کوردستان", about_h1_l1: "خانوویەک دروستکراوە", about_h1_l2: "لەسەر خۆگرتن.",
+      about_eyebrow: "هەولێر، کوردستان", ed_eyebrow: "چاپی کوردستان", ed_h2: "پێنج شووشە، یەک سەرچاوە.", ed_p: "هەریەکەیان جەمەدانییەکی دەستچن و ڕەنگێکی تایبەتی خۆی هەیە، لە سپیی ڕووناکەوە تا ڕەشی قووڵ. ئەوەی هەست دەکەیت هی خۆتە بیدۆزەرەوە.", ed_cta: "پێنج بەشەکە ببینە", about_h1_l1: "خانوویەک دروستکراوە", about_h1_l2: "لەسەر خۆگرتن.",
       about_intro: "ئاسیۆرا خانووێکی جلوبەرگ، کەلوپەل و بۆنی دیاریکراوە — لە هەولێر دامەزراوە و بە میراتی کوردی شێوەی پێدراوە. هەر پارچەیەک بە وردی هەڵدەبژێردرێت، نەک کۆدەکرێتەوە. هەر بۆنێک بێ پەلە و بۆ ماوەیەکی درێژ دروستکراوە.",
       about_origin_eyebrow: "سەرچاوەمان", about_origin_h2: "ڕەگ لە چیاکانی کوردستانەوە",
       about_origin_p1: "ئاسیۆرا بە بڕوایەکی سادە دەستیپێکرد: کە پێویستە جلوبەرگ و بۆن باری شوێنێک هەڵبگرن، نەک تەنها مۆدایەک. ناو، ڕەنگ و نەخشەکان — هەموویان لە ناسنامەی کوردی، فۆلکلۆری چیاکانی کوردستان، و تەلاری چیاکانی ناوچەکەمان وەردەگیرێن.",
@@ -2112,7 +2211,7 @@
       frag_index_eyebrow: "المجموعة", frag_index_title: "جميع العطور", frag_index_desc: "كل رائحة متوفرة حاليًا.",
       search_placeholder: "ابحث عن القطع…", frag_search_placeholder: "ابحث عن العطور…",
       shop_hero_eyebrow: "مجموعة الخريف", shop_hero_h1_l1: "بعناية،", shop_hero_h1_l2: "دائمًا.", shop_hero_sub: "ملابس وقطع، منتقاة بعناية وتأنٍّ.",
-      about_eyebrow: "أربيل، كردستان", about_h1_l1: "بيت بُني", about_h1_l2: "على التأني.",
+      about_eyebrow: "أربيل، كردستان", ed_eyebrow: "إصدار كردستان", ed_h2: "خمس زجاجات، أصل واحد.", ed_p: "كل زجاجة تتزين بجمداني منسوج يدوياً ولون خاص بها، من الأبيض المشرق إلى الأسود العميق. اكتشف العطر الذي يشبهك.", ed_cta: "اكتشف الفصول الخمسة", about_h1_l1: "بيت بُني", about_h1_l2: "على التأني.",
       about_intro: "أسيورا دار ملابس وقطع وعطور مدروسة بعناية — تأسست في أربيل وتشكّلت بالتراث الكردي. كل قطعة تُختار بعناية لا تُكدَّس، وكل عطر يُصنع بلا استعجال ليدوم طويلاً.",
       about_origin_eyebrow: "أصلنا", about_origin_h2: "متجذرون في جبال كردستان",
       about_origin_p1: "بدأت أسيورا بقناعة بسيطة: أن الملابس والعطور يجب أن تحمل وزن مكان، لا مجرد اتجاه عابر. الاسم واللوحة اللونية والزخارف كلها مستوحاة من الهوية الكردية، ومن فولكلور جبال كردستان، ومن ملامح الجبال التي ترسم أفق منطقتنا.",
@@ -2588,7 +2687,36 @@
   const chaptersEl = document.getElementById('chapters');
   const finaleEl = document.getElementById('chaptersFinale');
   let chaptersSig = '';
+  // About page: the five bottles, each leading to its chapter.
+  const editionRow = document.getElementById('editionRow');
+  let editionLang = '';
+  function renderEdition(){
+    if(!editionRow || editionLang === currentLang) return;
+    editionLang = currentLang;
+    const dict = T_DICT[currentLang];
+    editionRow.innerHTML = CHAPTERS.map((ch, i) => {
+      const word = ch.word[currentLang] || ch.word.en;
+      return `<button type="button" class="edition-item" data-edition-go="${i}" data-key="${ch.key}" style="--ch-bg:${ch.bg};--i:${i}" aria-label="${escapeAttr(dict.ch_eyebrow + ' ' + ROMAN[i] + ' — ' + word)}">
+        <span class="edition-img"><img src="${ch.img}" width="${ch.w}" height="${ch.h}" alt="" loading="lazy" decoding="async"></span>
+        <span class="edition-num">${ROMAN[i]}</span>
+        <span class="edition-word">${escapeHtml(word)}</span>
+      </button>`;
+    }).join('');
+  }
+  document.addEventListener('click', (e) => {
+    const go = e.target.closest('[data-edition-go]');
+    if(!go) return;
+    const i = Number(go.dataset.editionGo);
+    trackEvent('About bottle', { bottle: CHAPTERS[i] ? CHAPTERS[i].key : '-' });
+    location.hash = 'fragrance';
+    setTimeout(() => {
+      const target = chaptersEl && chaptersEl.querySelectorAll('.chapter')[i];
+      if(target) target.scrollIntoView({ behavior:'auto', block:'start' });
+    }, 420);
+  });
+  renderEdition();
   function renderChapters(){
+    renderEdition();
     if(!chaptersEl) return;
     const dict = T_DICT[currentLang];
     const map = chapterProducts();
